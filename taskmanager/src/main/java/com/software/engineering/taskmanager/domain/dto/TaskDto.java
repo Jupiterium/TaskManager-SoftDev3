@@ -8,7 +8,7 @@ import java.util.UUID;
 
 // We use record here as it allows for an immutable class
 // This class is basically a data carrier
-public record TaskDto(
+public record   TaskDto(
         // Each instance variable is immutable
         UUID id,
         String title,
