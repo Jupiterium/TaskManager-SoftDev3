@@ -8,6 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
     "clean": "rimraf .next out dist coverage .turbo node_modules package-lock.json && npm cache clean --force"
   },
   "dependencies": {
@@ -33,6 +35,11 @@
     "tailwindcss": "^3.4.14",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.7.0",
-    "vite": "^5.4.8"
+    "vite": "^5.4.8",
+    "vitest": "^2.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/jest-dom": "^6.4.0",
+    "@testing-library/user-event": "^14.5.0",
+    "jsdom": "^25.0.0"
   }
 }
