@@ -65,4 +65,11 @@ public class NotificationServiceImpl implements NotificationService {
         String message = String.format("Task '%s' is due soon!", task.getTitle());
         createNotification(title, message, NotificationType.TASK_DUE_SOON, task);
     }
+
+    @Override
+    public void createCustomReminderNotification(Task task) {
+        String title = "Custom Reminder";
+        String message = String.format("Reminder for task: '%s'", task.getTitle());
+        createNotification(title, message, NotificationType.CUSTOM_REMINDER, task);
+    }
 }

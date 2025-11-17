@@ -60,7 +60,8 @@ public class TaskServiceImpl implements TaskService {
                 taskPriority,
                 taskList,
                 now,
-                now
+                now,
+                task.getCustomReminderDateTime()
         );
         return taskRepository.save(taskToSave);
     }
@@ -94,6 +95,7 @@ public class TaskServiceImpl implements TaskService {
         existingTask.setDueDate(task.getDueDate());
         existingTask.setPriority(task.getPriority());
         existingTask.setStatus(task.getStatus());
+        existingTask.setCustomReminderDateTime(task.getCustomReminderDateTime());
         existingTask.setUpdated(LocalDateTime.now());
 
         return taskRepository.save(existingTask);

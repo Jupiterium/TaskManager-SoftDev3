@@ -160,6 +160,8 @@ interface AppContextType {
       task: Task
     ) => Promise<void>;
     deleteTask: (taskListId: string, taskId: string) => Promise<void>;
+    setCustomReminder: (taskListId: string, taskId: string, reminderDateTime: Date) => Promise<void>;
+    removeCustomReminder: (taskListId: string, taskId: string) => Promise<void>;
   };
 }
 
@@ -259,6 +261,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         jsonHeaders
       );
       dispatch({ type: DELETE_TASK, payload: { taskListId, taskId } });
+    },
+    setCustomReminder: async (taskListId, taskId, reminderDateTime) => {
+      const response = await axios.put<Task>(
+        `/api/task-lists/${taskListId}/tasks/${taskId}/reminder`,
+        reminderDateTime.toISOString(),
+        jsonHeaders
+      );
+      dispatch({
+        type: UPDATE_TASK,
+        payload: { taskListId, taskId, task: response.data },
+      });
+    },
+    removeCustomReminder: async (taskListId, taskId) => {
+      const response = await axios.delete<Task>(
+        `/api/task-lists/${taskListId}/tasks/${taskId}/reminder`,
+        jsonHeaders
+      );
+      dispatch({
+        type: UPDATE_TASK,
+        payload: { taskListId, taskId, task: response.data },
+      });
     },
   };
 

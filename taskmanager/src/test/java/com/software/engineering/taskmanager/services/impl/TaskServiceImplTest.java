@@ -37,7 +37,7 @@ class TaskServiceImplTest {
     @BeforeEach
     void setUp() {
         mockTaskList = new TaskList(taskListId, "Test List", "Description", null, LocalDateTime.now(), LocalDateTime.now());
-        mockTask = new Task(taskId, "Test Task", "Description", null, TaskStatus.OPEN, TaskPriority.MEDIUM, mockTaskList, LocalDateTime.now(), LocalDateTime.now());
+        mockTask = new Task(taskId, "Test Task", "Description", null, TaskStatus.OPEN, TaskPriority.MEDIUM, mockTaskList, LocalDateTime.now(), LocalDateTime.now(), null);
     }
     
     @Test
@@ -53,7 +53,7 @@ class TaskServiceImplTest {
     
     @Test
     void createTask_ValidTask_ReturnsCreatedTask() {
-        Task inputTask = new Task(null, "New Task", "Description", null, null, null, null, null, null);
+        Task inputTask = new Task(null, "New Task", "Description", null, null, null, null, null, null, null);
         when(taskListRepository.findById(taskListId)).thenReturn(Optional.of(mockTaskList));
         when(taskRepository.save(any(Task.class))).thenReturn(mockTask);
         
@@ -65,7 +65,7 @@ class TaskServiceImplTest {
     
     @Test
     void createTask_TaskWithId_ThrowsException() {
-        Task inputTask = new Task(taskId, "Task", "Description", null, null, null, null, null, null);
+        Task inputTask = new Task(taskId, "Task", "Description", null, null, null, null, null, null, null);
         
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.createTask(taskListId, inputTask));
@@ -75,7 +75,7 @@ class TaskServiceImplTest {
     
     @Test
     void createTask_NullTitle_ThrowsException() {
-        Task inputTask = new Task(null, null, "Description", null, null, null, null, null, null);
+        Task inputTask = new Task(null, null, "Description", null, null, null, null, null, null, null);
         
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.createTask(taskListId, inputTask));
@@ -85,7 +85,7 @@ class TaskServiceImplTest {
     
     @Test
     void createTask_BlankTitle_ThrowsException() {
-        Task inputTask = new Task(null, "   ", "Description", null, null, null, null, null, null);
+        Task inputTask = new Task(null, "   ", "Description", null, null, null, null, null, null, null);
         
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.createTask(taskListId, inputTask));
@@ -128,7 +128,7 @@ class TaskServiceImplTest {
     
     @Test
     void updateTask_ValidTask_ReturnsUpdatedTask() {
-        Task updateTask = new Task(taskId, "Updated", "Updated desc", null, TaskStatus.OPEN, TaskPriority.HIGH, null, null, null);
+        Task updateTask = new Task(taskId, "Updated", "Updated desc", null, TaskStatus.OPEN, TaskPriority.HIGH, null, null, null, null);
         when(taskRepository.findByTaskListIdAndId(taskListId, taskId)).thenReturn(Optional.of(mockTask));
         when(taskRepository.save(any(Task.class))).thenReturn(mockTask);
         
@@ -140,7 +140,7 @@ class TaskServiceImplTest {
     
     @Test
     void updateTask_NullId_ThrowsException() {
-        Task updateTask = new Task(null, "Updated", "Updated desc", null, TaskStatus.CLOSED, TaskPriority.HIGH, null, null, null);
+        Task updateTask = new Task(null, "Updated", "Updated desc", null, TaskStatus.CLOSED, TaskPriority.HIGH, null, null, null, null);
         
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.updateTask(taskListId, taskId, updateTask));
@@ -151,7 +151,7 @@ class TaskServiceImplTest {
     @Test
     void updateTask_MismatchedIds_ThrowsException() {
         UUID differentId = UUID.randomUUID();
-        Task updateTask = new Task(differentId, "Updated", "Updated desc", null, TaskStatus.OPEN, TaskPriority.HIGH, null, null, null);
+        Task updateTask = new Task(differentId, "Updated", "Updated desc", null, TaskStatus.OPEN, TaskPriority.HIGH, null, null, null, null);
         
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.updateTask(taskListId, taskId, updateTask));
@@ -161,7 +161,7 @@ class TaskServiceImplTest {
     
     @Test
     void updateTask_NullPriority_ThrowsException() {
-        Task updateTask = new Task(taskId, "Updated", "Updated desc", null, TaskStatus.CLOSED, null, null, null, null);
+        Task updateTask = new Task(taskId, "Updated", "Updated desc", null, TaskStatus.CLOSED, null, null, null, null, null);
         
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.updateTask(taskListId, taskId, updateTask));
@@ -171,7 +171,7 @@ class TaskServiceImplTest {
     
     @Test
     void updateTask_NullStatus_ThrowsException() {
-        Task updateTask = new Task(taskId, "Updated", "Updated desc", null, null, TaskPriority.HIGH, null, null, null);
+        Task updateTask = new Task(taskId, "Updated", "Updated desc", null, null, TaskPriority.HIGH, null, null, null, null);
         
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.updateTask(taskListId, taskId, updateTask));
@@ -181,7 +181,7 @@ class TaskServiceImplTest {
     
     @Test
     void updateTask_TaskNotFound_ThrowsException() {
-        Task updateTask = new Task(taskId, "Updated", "Updated desc", null, TaskStatus.CLOSED, TaskPriority.HIGH, null, null, null);
+        Task updateTask = new Task(taskId, "Updated", "Updated desc", null, TaskStatus.CLOSED, TaskPriority.HIGH, null, null, null, null);
         when(taskRepository.findByTaskListIdAndId(taskListId, taskId)).thenReturn(Optional.empty());
         
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 

@@ -13,7 +13,7 @@ import {
   TableRow,
   Spinner,
 } from "@nextui-org/react";
-import { ArrowLeft, Edit, Minus, Plus, Trash } from "lucide-react";
+import { ArrowLeft, Bell, BellOff, Edit, Minus, Plus, Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../AppProvider";
@@ -115,6 +115,18 @@ const TaskListScreen: React.FC = () => {
             )}
           </TableCell>
           <TableCell className="px-4 py-2">
+            {task.customReminderDateTime ? (
+              <div className="flex items-center space-x-2">
+                <Bell className="h-4 w-4 text-blue-500" />
+                <span className="text-sm">
+                  {new Date(task.customReminderDateTime).toLocaleString()}
+                </span>
+              </div>
+            ) : (
+              <BellOff className="h-4 w-4 text-gray-400" />
+            )}
+          </TableCell>
+          <TableCell className="px-4 py-2">
             <div className="flex space-x-2">
               <Button
                 variant="ghost"
@@ -125,6 +137,27 @@ const TaskListScreen: React.FC = () => {
               >
                 <Edit className="h-4 w-4" />
               </Button>
+              {task.customReminderDateTime ? (
+                <Button
+                  variant="ghost"
+                  onClick={() => api.removeCustomReminder(listId, task.id!)}
+                  aria-label={`Remove reminder for "${task.title}"`}
+                >
+                  <BellOff className="h-4 w-4" />
+                </Button>
+              ) : (
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    const reminderTime = new Date();
+                    reminderTime.setHours(reminderTime.getHours() + 1);
+                    api.setCustomReminder(listId, task.id!, reminderTime);
+                  }}
+                  aria-label={`Set 1-hour reminder for "${task.title}"`}
+                >
+                  <Bell className="h-4 w-4" />
+                </Button>
+              )}
               <Button
                 variant="ghost"
                 onClick={() => api.deleteTask(listId, task.id)}
@@ -190,6 +223,7 @@ const TaskListScreen: React.FC = () => {
             <TableColumn>Title</TableColumn>
             <TableColumn>Priority</TableColumn>
             <TableColumn>Due Date</TableColumn>
+            <TableColumn>Reminder</TableColumn>
             <TableColumn>Actions</TableColumn>
           </TableHeader>
           <TableBody>{tableRows()}</TableBody>

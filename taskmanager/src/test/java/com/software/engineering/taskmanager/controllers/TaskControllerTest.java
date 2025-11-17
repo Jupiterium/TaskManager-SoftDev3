@@ -42,8 +42,8 @@ class TaskControllerTest {
     
     @BeforeEach
     void setUp() {
-        mockTaskDto = new TaskDto(taskId, "Test Task", "Description", null, TaskPriority.MEDIUM, TaskStatus.OPEN);
-        mockTask = new Task(taskId, "Test Task", "Description", null, TaskStatus.OPEN, TaskPriority.MEDIUM, null, LocalDateTime.now(), LocalDateTime.now());
+        mockTaskDto = new TaskDto(taskId, "Test Task", "Description", null, TaskPriority.MEDIUM, TaskStatus.OPEN, null);
+        mockTask = new Task(taskId, "Test Task", "Description", null, TaskStatus.OPEN, TaskPriority.MEDIUM, null, LocalDateTime.now(), LocalDateTime.now(), null);
     }
     
     @Test
@@ -122,5 +122,34 @@ class TaskControllerTest {
                 .andExpect(status().isOk());
         
         verify(taskService).deleteTask(taskListId, taskId);
+    }
+    
+    @Test
+    void setCustomReminder_ReturnsUpdatedTask() throws Exception {
+        LocalDateTime reminderTime = LocalDateTime.now().plusHours(2);
+        when(taskService.getTask(taskListId, taskId)).thenReturn(Optional.of(mockTask));
+        when(taskService.updateTask(eq(taskListId), eq(taskId), any(Task.class))).thenReturn(mockTask);
+        when(taskMapper.toDto(mockTask)).thenReturn(mockTaskDto);
+        
+        mockMvc.perform(put("/task-lists/{task_list_id}/tasks/{task_id}/reminder", taskListId, taskId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reminderTime)))
+                .andExpect(status().isOk());
+        
+        verify(taskService).getTask(taskListId, taskId);
+        verify(taskService).updateTask(eq(taskListId), eq(taskId), any(Task.class));
+    }
+    
+    @Test
+    void removeCustomReminder_ReturnsUpdatedTask() throws Exception {
+        when(taskService.getTask(taskListId, taskId)).thenReturn(Optional.of(mockTask));
+        when(taskService.updateTask(eq(taskListId), eq(taskId), any(Task.class))).thenReturn(mockTask);
+        when(taskMapper.toDto(mockTask)).thenReturn(mockTaskDto);
+        
+        mockMvc.perform(delete("/task-lists/{task_list_id}/tasks/{task_id}/reminder", taskListId, taskId))
+                .andExpect(status().isOk());
+        
+        verify(taskService).getTask(taskListId, taskId);
+        verify(taskService).updateTask(eq(taskListId), eq(taskId), any(Task.class));
     }
 }

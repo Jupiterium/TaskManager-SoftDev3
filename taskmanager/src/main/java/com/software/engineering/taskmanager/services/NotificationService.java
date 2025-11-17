@@ -14,4 +14,5 @@ public interface NotificationService {
     void deleteNotification(UUID notificationId);
     Notification createNotification(String title, String message, NotificationType type, Task task);
     void createTaskDueNotification(Task task);
+    void createCustomReminderNotification(Task task);
 }
