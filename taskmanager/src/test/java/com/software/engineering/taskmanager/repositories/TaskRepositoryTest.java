@@ -31,7 +31,7 @@ class TaskRepositoryTest {
         taskList = new TaskList(null, "Test List", "Description", null, LocalDateTime.now(), LocalDateTime.now());
         taskList = entityManager.persistAndFlush(taskList);
         
-        task = new Task(null, "Test Task", "Description", null, TaskStatus.OPEN, TaskPriority.MEDIUM, taskList, LocalDateTime.now(), LocalDateTime.now());
+        task = new Task(null, "Test Task", "Description", null, TaskStatus.OPEN, TaskPriority.MEDIUM, taskList, LocalDateTime.now(), LocalDateTime.now(), null);
         task = entityManager.persistAndFlush(task);
     }
     
@@ -58,5 +58,36 @@ class TaskRepositoryTest {
         
         Optional<Task> deleted = taskRepository.findByTaskListIdAndId(taskList.getId(), task.getId());
         assertFalse(deleted.isPresent());
+    }
+
+    @Test
+    void findByCustomReminderDateTimeBetween_ReturnsTasksWithRemindersInRange() {
+        LocalDateTime reminderTime = LocalDateTime.now().plusHours(1);
+        Task taskWithReminder = new Task(null, "Reminder Task", "Has reminder", null, TaskStatus.OPEN, TaskPriority.HIGH, taskList, LocalDateTime.now(), LocalDateTime.now(), null);
+        taskWithReminder.setCustomReminderDateTime(reminderTime);
+        entityManager.persistAndFlush(taskWithReminder);
+
+        LocalDateTime start = reminderTime.minusMinutes(30);
+        LocalDateTime end = reminderTime.plusMinutes(30);
+        
+        List<Task> tasksWithReminders = taskRepository.findByCustomReminderDateTimeBetween(start, end);
+        
+        assertEquals(1, tasksWithReminders.size());
+        assertEquals(taskWithReminder.getId(), tasksWithReminders.get(0).getId());
+    }
+
+    @Test
+    void findByDueDateBetween_ReturnsTasksWithDueDatesInRange() {
+        LocalDateTime dueDate = LocalDateTime.now().plusDays(1);
+        Task taskWithDueDate = new Task(null, "Due Task", "Has due date", dueDate, TaskStatus.OPEN, TaskPriority.MEDIUM, taskList, LocalDateTime.now(), LocalDateTime.now(), null);
+        entityManager.persistAndFlush(taskWithDueDate);
+
+        LocalDateTime start = dueDate.minusHours(12);
+        LocalDateTime end = dueDate.plusHours(12);
+        
+        List<Task> tasksWithDueDates = taskRepository.findByDueDateBetween(start, end);
+        
+        assertEquals(1, tasksWithDueDates.size());
+        assertEquals(taskWithDueDate.getId(), tasksWithDueDates.get(0).getId());
     }
 }

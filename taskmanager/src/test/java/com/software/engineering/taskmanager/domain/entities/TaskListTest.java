@@ -67,7 +67,7 @@ class TaskListTest {
     @Test
     void setTasks_UpdatesTasks() {
         List<Task> newTasks = new ArrayList<>();
-        Task task = new Task(UUID.randomUUID(), "Task", "Desc", now, TaskStatus.OPEN, TaskPriority.MEDIUM, taskList, now, now);
+        Task task = new Task(UUID.randomUUID(), "Task", "Desc", now, TaskStatus.OPEN, TaskPriority.MEDIUM, taskList, now, now, null);
         newTasks.add(task);
         
         taskList.setTasks(newTasks);

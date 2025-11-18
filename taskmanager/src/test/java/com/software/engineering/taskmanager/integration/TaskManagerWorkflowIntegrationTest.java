@@ -33,9 +33,9 @@ class TaskManagerWorkflowIntegrationTest {
         TaskList createdTaskList = taskListService.createTaskList(taskList);
 
         // Create multiple tasks
-        Task task1 = new Task(null, "Setup Database", "Configure database schema", LocalDateTime.now().plusDays(3), null, TaskPriority.HIGH, null, null, null);
-        Task task2 = new Task(null, "Implement API", "Create REST endpoints", LocalDateTime.now().plusDays(7), null, TaskPriority.MEDIUM, null, null, null);
-        Task task3 = new Task(null, "Write Tests", "Unit and integration tests", null, null, null, null, null, null);
+        Task task1 = new Task(null, "Setup Database", "Configure database schema", LocalDateTime.now().plusDays(3), null, TaskPriority.HIGH, null, null, null, null);
+        Task task2 = new Task(null, "Implement API", "Create REST endpoints", LocalDateTime.now().plusDays(7), null, TaskPriority.MEDIUM, null, null, null, null);
+        Task task3 = new Task(null, "Write Tests", "Unit and integration tests", null, null, null, null, null, null, null);
 
         Task createdTask1 = taskService.createTask(createdTaskList.getId(), task1);
         Task createdTask2 = taskService.createTask(createdTaskList.getId(), task2);
@@ -47,7 +47,7 @@ class TaskManagerWorkflowIntegrationTest {
         assertThat(tasks).extracting(Task::getTitle).containsExactlyInAnyOrder("Setup Database", "Implement API", "Write Tests");
 
         // Update task status
-        Task updateTask1 = new Task(createdTask1.getId(), "Setup Database", "Database configured successfully", createdTask1.getDueDate(), TaskStatus.CLOSED, TaskPriority.HIGH, null, null, null);
+        Task updateTask1 = new Task(createdTask1.getId(), "Setup Database", "Database configured successfully", createdTask1.getDueDate(), TaskStatus.CLOSED, TaskPriority.HIGH, null, null, null, null);
         Task updatedTask1 = taskService.updateTask(createdTaskList.getId(), createdTask1.getId(), updateTask1);
 
         assertThat(updatedTask1.getStatus()).isEqualTo(TaskStatus.CLOSED);
@@ -78,8 +78,8 @@ class TaskManagerWorkflowIntegrationTest {
         TaskList taskList = new TaskList(null, "Temporary Project", "Will be deleted", null, null, null);
         TaskList createdTaskList = taskListService.createTaskList(taskList);
 
-        Task task1 = new Task(null, "Task 1", "Description 1", null, null, TaskPriority.LOW, null, null, null);
-        Task task2 = new Task(null, "Task 2", "Description 2", null, null, TaskPriority.MEDIUM, null, null, null);
+        Task task1 = new Task(null, "Task 1", "Description 1", null, null, TaskPriority.LOW, null, null, null, null);
+        Task task2 = new Task(null, "Task 2", "Description 2", null, null, TaskPriority.MEDIUM, null, null, null, null);
 
         taskService.createTask(createdTaskList.getId(), task1);
         taskService.createTask(createdTaskList.getId(), task2);

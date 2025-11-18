@@ -95,7 +95,7 @@ class TaskServiceImplTest {
     
     @Test
     void createTask_InvalidTaskListId_ThrowsException() {
-        Task inputTask = new Task(null, "Task", "Description", null, null, null, null, null, null);
+        Task inputTask = new Task(null, "Task", "Description", null, null, null, null, null, null, null);
         when(taskListRepository.findById(taskListId)).thenReturn(Optional.empty());
         
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
@@ -106,7 +106,7 @@ class TaskServiceImplTest {
     
     @Test
     void createTask_NullPriority_DefaultsToMedium() {
-        Task inputTask = new Task(null, "Task", "Description", null, null, null, null, null, null);
+        Task inputTask = new Task(null, "Task", "Description", null, null, null, null, null, null, null);
         when(taskListRepository.findById(taskListId)).thenReturn(Optional.of(mockTaskList));
         when(taskRepository.save(any(Task.class))).thenReturn(mockTask);
         

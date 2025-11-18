@@ -28,7 +28,7 @@ class TaskManagerErrorScenariosIntegrationTest {
     @Test
     void createTask_WithInvalidTaskListId_ThrowsException() {
         UUID invalidTaskListId = UUID.randomUUID();
-        Task task = new Task(null, "Test Task", "Description", null, null, TaskPriority.MEDIUM, null, null, null);
+        Task task = new Task(null, "Test Task", "Description", null, null, TaskPriority.MEDIUM, null, null, null, null);
 
         assertThatThrownBy(() -> taskService.createTask(invalidTaskListId, task))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -41,7 +41,7 @@ class TaskManagerErrorScenariosIntegrationTest {
         TaskList createdTaskList = taskListService.createTaskList(taskList);
 
         UUID existingId = UUID.randomUUID();
-        Task task = new Task(existingId, "Test Task", "Description", null, null, TaskPriority.MEDIUM, null, null, null);
+        Task task = new Task(existingId, "Test Task", "Description", null, null, TaskPriority.MEDIUM, null, null, null, null);
 
         assertThatThrownBy(() -> taskService.createTask(createdTaskList.getId(), task))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -53,7 +53,7 @@ class TaskManagerErrorScenariosIntegrationTest {
         TaskList taskList = new TaskList(null, "Test List", "Description", null, null, null);
         TaskList createdTaskList = taskListService.createTaskList(taskList);
 
-        Task task = new Task(null, null, "Description", null, null, TaskPriority.MEDIUM, null, null, null);
+        Task task = new Task(null, null, "Description", null, null, TaskPriority.MEDIUM, null, null, null, null);
 
         assertThatThrownBy(() -> taskService.createTask(createdTaskList.getId(), task))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -65,7 +65,7 @@ class TaskManagerErrorScenariosIntegrationTest {
         TaskList taskList = new TaskList(null, "Test List", "Description", null, null, null);
         TaskList createdTaskList = taskListService.createTaskList(taskList);
 
-        Task task = new Task(null, "   ", "Description", null, null, TaskPriority.MEDIUM, null, null, null);
+        Task task = new Task(null, "   ", "Description", null, null, TaskPriority.MEDIUM, null, null, null, null);
 
         assertThatThrownBy(() -> taskService.createTask(createdTaskList.getId(), task))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -78,7 +78,7 @@ class TaskManagerErrorScenariosIntegrationTest {
         TaskList createdTaskList = taskListService.createTaskList(taskList);
 
         UUID nonExistentTaskId = UUID.randomUUID();
-        Task updateTask = new Task(nonExistentTaskId, "Updated Task", "Description", null, TaskStatus.OPEN, TaskPriority.HIGH, null, null, null);
+        Task updateTask = new Task(nonExistentTaskId, "Updated Task", "Description", null, TaskStatus.OPEN, TaskPriority.HIGH, null, null, null, null);
 
         assertThatThrownBy(() -> taskService.updateTask(createdTaskList.getId(), nonExistentTaskId, updateTask))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -90,11 +90,11 @@ class TaskManagerErrorScenariosIntegrationTest {
         TaskList taskList = new TaskList(null, "Test List", "Description", null, null, null);
         TaskList createdTaskList = taskListService.createTaskList(taskList);
 
-        Task task = new Task(null, "Original Task", "Description", null, null, TaskPriority.MEDIUM, null, null, null);
+        Task task = new Task(null, "Original Task", "Description", null, null, TaskPriority.MEDIUM, null, null, null, null);
         Task createdTask = taskService.createTask(createdTaskList.getId(), task);
 
         UUID differentId = UUID.randomUUID();
-        Task updateTask = new Task(differentId, "Updated Task", "Description", null, TaskStatus.OPEN, TaskPriority.HIGH, null, null, null);
+        Task updateTask = new Task(differentId, "Updated Task", "Description", null, TaskStatus.OPEN, TaskPriority.HIGH, null, null, null, null);
 
         assertThatThrownBy(() -> taskService.updateTask(createdTaskList.getId(), createdTask.getId(), updateTask))
                 .isInstanceOf(IllegalArgumentException.class)

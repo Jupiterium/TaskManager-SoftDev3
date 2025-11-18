@@ -34,8 +34,8 @@ class TaskListMapperImplTest {
     @Test
     void fromDto_ConvertsTaskListDtoToTaskList() {
         UUID id = UUID.randomUUID();
-        TaskDto taskDto = new TaskDto(UUID.randomUUID(), "Task", "Desc", null, TaskPriority.MEDIUM, TaskStatus.OPEN);
-        Task task = new Task(taskDto.id(), "Task", "Desc", null, TaskStatus.OPEN, TaskPriority.MEDIUM, null, null, null);
+        TaskDto taskDto = new TaskDto(UUID.randomUUID(), "Task", "Desc", null, TaskPriority.MEDIUM, TaskStatus.OPEN, null);
+        Task task = new Task(taskDto.id(), "Task", "Desc", null, TaskStatus.OPEN, TaskPriority.MEDIUM, null, null, null, null);
         TaskListDto dto = new TaskListDto(id, "List", "Description", 1, 0.5, List.of(taskDto));
         
         when(taskMapper.fromDto(taskDto)).thenReturn(task);
@@ -54,12 +54,12 @@ class TaskListMapperImplTest {
     @Test
     void toDto_ConvertsTaskListToTaskListDto() {
         UUID id = UUID.randomUUID();
-        Task closedTask = new Task(UUID.randomUUID(), "Task1", "Desc", null, TaskStatus.CLOSED, TaskPriority.HIGH, null, null, null);
-        Task openTask = new Task(UUID.randomUUID(), "Task2", "Desc", null, TaskStatus.OPEN, TaskPriority.LOW, null, null, null);
+        Task closedTask = new Task(UUID.randomUUID(), "Task1", "Desc", null, TaskStatus.CLOSED, TaskPriority.HIGH, null, null, null, null);
+        Task openTask = new Task(UUID.randomUUID(), "Task2", "Desc", null, TaskStatus.OPEN, TaskPriority.LOW, null, null, null, null);
         TaskList taskList = new TaskList(id, "List", "Description", List.of(closedTask, openTask), LocalDateTime.now(), LocalDateTime.now());
         
-        TaskDto closedDto = new TaskDto(closedTask.getId(), "Task1", "Desc", null, TaskPriority.HIGH, TaskStatus.CLOSED);
-        TaskDto openDto = new TaskDto(openTask.getId(), "Task2", "Desc", null, TaskPriority.LOW, TaskStatus.OPEN);
+        TaskDto closedDto = new TaskDto(closedTask.getId(), "Task1", "Desc", null, TaskPriority.HIGH, TaskStatus.CLOSED, null);
+        TaskDto openDto = new TaskDto(openTask.getId(), "Task2", "Desc", null, TaskPriority.LOW, TaskStatus.OPEN, null);
         
         when(taskMapper.toDto(closedTask)).thenReturn(closedDto);
         when(taskMapper.toDto(openTask)).thenReturn(openDto);

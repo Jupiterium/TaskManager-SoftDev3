@@ -40,7 +40,7 @@ class TaskManagerPerformanceIntegrationTest {
         // Create multiple tasks for each TaskList
         createdTaskLists.forEach(taskList -> {
             IntStream.range(0, 10)
-                    .mapToObj(i -> new Task(null, "Task " + i, "Description " + i, null, null, TaskPriority.MEDIUM, null, null, null))
+                    .mapToObj(i -> new Task(null, "Task " + i, "Description " + i, null, null, TaskPriority.MEDIUM, null, null, null, null))
                     .forEach(task -> taskService.createTask(taskList.getId(), task));
         });
 
@@ -65,7 +65,7 @@ class TaskManagerPerformanceIntegrationTest {
         // Create tasks sequentially to simulate concurrent-like load
         List<Task> createdTasks = IntStream.range(0, 10)
                 .mapToObj(i -> {
-                    Task task = new Task(null, "Sequential Task " + i, "Description " + i, null, null, TaskPriority.LOW, null, null, null);
+                    Task task = new Task(null, "Sequential Task " + i, "Description " + i, null, null, TaskPriority.LOW, null, null, null, null);
                     return taskService.createTask(createdTaskList.getId(), task);
                 })
                 .toList();
@@ -84,7 +84,7 @@ class TaskManagerPerformanceIntegrationTest {
         TaskList taskList = new TaskList(null, "Consistency Test List", "Description", null, null, null);
         TaskList createdTaskList = taskListService.createTaskList(taskList);
 
-        Task task = new Task(null, "Consistency Task", "Original Description", null, null, TaskPriority.MEDIUM, null, null, null);
+        Task task = new Task(null, "Consistency Task", "Original Description", null, null, TaskPriority.MEDIUM, null, null, null, null);
         Task createdTask = taskService.createTask(createdTaskList.getId(), task);
 
         // Perform multiple updates to verify consistency
@@ -96,6 +96,7 @@ class TaskManagerPerformanceIntegrationTest {
                     null,
                     createdTask.getStatus(),
                     TaskPriority.HIGH,
+                    null,
                     null,
                     null,
                     null

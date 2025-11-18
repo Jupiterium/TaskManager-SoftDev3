@@ -39,7 +39,7 @@ class TaskServiceIntegrationTest {
 
     @Test
     void createTask_IntegrationTest() {
-        Task task = new Task(null, "Integration Task", "Test Description", null, null, TaskPriority.HIGH, null, null, null);
+        Task task = new Task(null, "Integration Task", "Test Description", null, null, TaskPriority.HIGH, null, null, null, null);
 
         Task createdTask = taskService.createTask(savedTaskList.getId(), task);
 
@@ -52,8 +52,8 @@ class TaskServiceIntegrationTest {
 
     @Test
     void listTasks_IntegrationTest() {
-        Task task1 = new Task(null, "Task 1", "Description 1", null, null, TaskPriority.HIGH, null, null, null);
-        Task task2 = new Task(null, "Task 2", "Description 2", null, null, TaskPriority.LOW, null, null, null);
+        Task task1 = new Task(null, "Task 1", "Description 1", null, null, TaskPriority.HIGH, null, null, null, null);
+        Task task2 = new Task(null, "Task 2", "Description 2", null, null, TaskPriority.LOW, null, null, null, null);
         
         taskService.createTask(savedTaskList.getId(), task1);
         taskService.createTask(savedTaskList.getId(), task2);
@@ -66,7 +66,7 @@ class TaskServiceIntegrationTest {
 
     @Test
     void getTask_IntegrationTest() {
-        Task task = new Task(null, "Get Task Test", "Description", null, null, TaskPriority.MEDIUM, null, null, null);
+        Task task = new Task(null, "Get Task Test", "Description", null, null, TaskPriority.MEDIUM, null, null, null, null);
         Task createdTask = taskService.createTask(savedTaskList.getId(), task);
 
         Optional<Task> retrievedTask = taskService.getTask(savedTaskList.getId(), createdTask.getId());
@@ -78,10 +78,10 @@ class TaskServiceIntegrationTest {
 
     @Test
     void updateTask_IntegrationTest() {
-        Task task = new Task(null, "Original Title", "Original Description", null, null, TaskPriority.LOW, null, null, null);
+        Task task = new Task(null, "Original Title", "Original Description", null, null, TaskPriority.LOW, null, null, null, null);
         Task createdTask = taskService.createTask(savedTaskList.getId(), task);
 
-        Task updateTask = new Task(createdTask.getId(), "Updated Title", "Updated Description", LocalDateTime.now().plusDays(1), TaskStatus.CLOSED, TaskPriority.HIGH, null, null, null);
+        Task updateTask = new Task(createdTask.getId(), "Updated Title", "Updated Description", LocalDateTime.now().plusDays(1), TaskStatus.CLOSED, TaskPriority.HIGH, null, null, null, null);
         Task updatedTask = taskService.updateTask(savedTaskList.getId(), createdTask.getId(), updateTask);
 
         assertThat(updatedTask.getTitle()).isEqualTo("Updated Title");
@@ -93,7 +93,7 @@ class TaskServiceIntegrationTest {
 
     @Test
     void deleteTask_IntegrationTest() {
-        Task task = new Task(null, "Task to Delete", "Description", null, null, TaskPriority.MEDIUM, null, null, null);
+        Task task = new Task(null, "Task to Delete", "Description", null, null, TaskPriority.MEDIUM, null, null, null, null);
         Task createdTask = taskService.createTask(savedTaskList.getId(), task);
 
         taskService.deleteTask(savedTaskList.getId(), createdTask.getId());
