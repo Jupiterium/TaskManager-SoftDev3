@@ -19,7 +19,8 @@ class TaskMapperImplTest {
     void fromDto_ConvertsTaskDtoToTask() {
         UUID id = UUID.randomUUID();
         LocalDateTime dueDate = LocalDateTime.now();
-        TaskDto dto = new TaskDto(id, "Title", "Description", dueDate, TaskPriority.HIGH, TaskStatus.OPEN);
+        LocalDateTime reminderTime = LocalDateTime.now().plusHours(1);
+        TaskDto dto = new TaskDto(id, "Title", "Description", dueDate, TaskPriority.HIGH, TaskStatus.OPEN, reminderTime);
         
         Task task = mapper.fromDto(dto);
         
@@ -29,6 +30,7 @@ class TaskMapperImplTest {
         assertEquals(dueDate, task.getDueDate());
         assertEquals(TaskPriority.HIGH, task.getPriority());
         assertEquals(TaskStatus.OPEN, task.getStatus());
+        assertEquals(reminderTime, task.getCustomReminderDateTime());
         assertNull(task.getTaskList());
         assertNull(task.getCreated());
         assertNull(task.getUpdated());
@@ -38,7 +40,8 @@ class TaskMapperImplTest {
     void toDto_ConvertsTaskToTaskDto() {
         UUID id = UUID.randomUUID();
         LocalDateTime dueDate = LocalDateTime.now();
-        Task task = new Task(id, "Title", "Description", dueDate, TaskStatus.CLOSED, TaskPriority.LOW, null, null, null);
+        LocalDateTime reminderTime = LocalDateTime.now().plusHours(2);
+        Task task = new Task(id, "Title", "Description", dueDate, TaskStatus.CLOSED, TaskPriority.LOW, null, null, null, reminderTime);
         
         TaskDto dto = mapper.toDto(task);
         
@@ -48,5 +51,6 @@ class TaskMapperImplTest {
         assertEquals(dueDate, dto.dueDate());
         assertEquals(TaskPriority.LOW, dto.priority());
         assertEquals(TaskStatus.CLOSED, dto.status());
+        assertEquals(reminderTime, dto.customReminderDateTime());
     }
 }

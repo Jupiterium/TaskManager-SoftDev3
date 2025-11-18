@@ -20,7 +20,8 @@ public class TaskMapperImpl implements TaskMapper
                 taskDto.priority(),
                 null,
                 null,
-                null
+                null,
+                taskDto.customReminderDateTime()
         );
     }
 
@@ -33,7 +34,8 @@ public class TaskMapperImpl implements TaskMapper
                 task.getDescription(),
                 task.getDueDate(),
                 task.getPriority(),
-                task.getStatus()
+                task.getStatus(),
+                task.getCustomReminderDateTime()
         );
     }
 }

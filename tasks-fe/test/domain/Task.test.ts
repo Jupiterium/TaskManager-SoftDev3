@@ -11,7 +11,8 @@ describe('Task', () => {
       description: 'Test Description',
       dueDate: new Date('2024-12-31'),
       priority: TaskPriority.HIGH,
-      status: TaskStatus.OPEN
+      status: TaskStatus.OPEN,
+      customReminderDateTime: new Date('2024-12-30T10:00:00')
     }
 
     expect(task.id).toBe('1')
@@ -28,11 +29,13 @@ describe('Task', () => {
       description: 'Test Description',
       dueDate: undefined,
       priority: TaskPriority.LOW,
-      status: undefined
+      status: undefined,
+      customReminderDateTime: undefined
     }
 
     expect(task.id).toBeUndefined()
     expect(task.dueDate).toBeUndefined()
     expect(task.status).toBeUndefined()
+    expect(task.customReminderDateTime).toBeUndefined()
   })
 })

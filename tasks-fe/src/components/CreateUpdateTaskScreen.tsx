@@ -7,7 +7,7 @@ import axios from "axios";
 import { TaskPriority } from "../domain/TaskPriority";
 import { DatePicker } from "@nextui-org/date-picker";
 import { TaskStatus } from "../domain/TaskStatus";
-import { parseDate } from "@internationalized/date";
+import { parseDate, parseDateTime } from "@internationalized/date";
 
 const CreateUpdateTaskScreen: React.FC = () => {
   const { state, api } = useAppContext();
@@ -20,6 +20,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
+  const [customReminderDateTime, setCustomReminderDateTime] = useState<Date | undefined>(undefined);
   const [priority, setPriority] = useState(TaskPriority.MEDIUM);
   const [status, setStatus] = useState<TaskStatus | undefined>(undefined);
 
@@ -56,6 +57,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
           setTitle(task.title);
           setDescription(task.description || "");
           setDueDate(task.dueDate ? new Date(task.dueDate) : undefined);
+          setCustomReminderDateTime(task.customReminderDateTime ? new Date(task.customReminderDateTime) : undefined);
           setPriority(task.priority || TaskPriority.MEDIUM);
           setStatus(task.status);
         }
@@ -87,6 +89,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
         setTitle(task.title);
         setDescription(task.description || "");
         setDueDate(task.dueDate ? new Date(task.dueDate) : undefined);
+        setCustomReminderDateTime(task.customReminderDateTime ? new Date(task.customReminderDateTime) : undefined);
         setPriority(task.priority || TaskPriority.MEDIUM);
         setStatus(task.status);
       }
@@ -105,6 +108,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
           dueDate,
           priority,
           status,
+          customReminderDateTime,
         });
       } else {
         await api.createTask(listId, {
@@ -113,6 +117,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
           dueDate,
           priority,
           status: undefined,
+          customReminderDateTime,
         });
       }
 
@@ -133,6 +138,15 @@ const CreateUpdateTaskScreen: React.FC = () => {
   const formatDateForPicker = (date: Date | undefined) => {
     if (!date) return undefined;
     return date.toISOString().split('T')[0];
+  };
+
+  const formatDateTimeForPicker = (date: Date | undefined) => {
+    if (!date) return undefined;
+    return date.toISOString().slice(0, 16);
+  };
+
+  const handleReminderChange = (dateTime: any) => {
+    setCustomReminderDateTime(dateTime ? new Date(dateTime.toString()) : undefined);
   };
 
   if (isLoading) {
@@ -176,6 +190,21 @@ const CreateUpdateTaskScreen: React.FC = () => {
           label="Due date (optional)"
           defaultValue={dueDate ? parseDate(formatDateForPicker(dueDate)!) : undefined}
           onChange={(newDate) => handleDateChange(newDate ? new Date(newDate.toString()) : null)}
+          popoverProps={{
+            placement: "right"
+          }}
+        />
+        <Spacer y={1} />
+        <DatePicker
+          label="Custom Reminder (optional)"
+          granularity="minute"
+          defaultValue={customReminderDateTime ? parseDateTime(formatDateTimeForPicker(customReminderDateTime)!) : undefined}
+          onChange={handleReminderChange}
+          popoverProps={{
+            placement: "right"
+          }}
+          hideTimeZone
+          hourCycle={12}
         />
         <Spacer y={4} />
         <div className="flex justify-between mx-auto gap-2">

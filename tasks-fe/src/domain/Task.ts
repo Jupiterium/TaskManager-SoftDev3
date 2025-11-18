@@ -8,5 +8,6 @@ interface Task {
   dueDate: Date | undefined;
   priority: TaskPriority;
   status: TaskStatus | undefined;
+  customReminderDateTime: Date | undefined;
 }
 export default Task;

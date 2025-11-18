@@ -17,7 +17,7 @@ class TaskTest {
     @BeforeEach
     void setUp() {
         taskList = new TaskList(UUID.randomUUID(), "List", "Desc", null, now, now);
-        task = new Task(UUID.randomUUID(), "Task", "Desc", now, TaskStatus.OPEN, TaskPriority.HIGH, taskList, now, now);
+        task = new Task(UUID.randomUUID(), "Task", "Desc", now, TaskStatus.OPEN, TaskPriority.HIGH, taskList, now, now, null);
     }
     
     @Test
@@ -27,7 +27,7 @@ class TaskTest {
         LocalDateTime created = LocalDateTime.now();
         LocalDateTime updated = LocalDateTime.now();
         
-        Task newTask = new Task(id, "Test Task", "Description", dueDate, TaskStatus.OPEN, TaskPriority.MEDIUM, taskList, created, updated);
+        Task newTask = new Task(id, "Test Task", "Description", dueDate, TaskStatus.OPEN, TaskPriority.MEDIUM, taskList, created, updated, null);
         
         assertEquals(id, newTask.getId());
         assertEquals("Test Task", newTask.getTitle());
@@ -112,6 +112,15 @@ class TaskTest {
     }
     
     @Test
+    void setCustomReminderDateTime_UpdatesCustomReminder() {
+        LocalDateTime reminderTime = LocalDateTime.now().plusHours(2);
+        
+        task.setCustomReminderDateTime(reminderTime);
+        
+        assertEquals(reminderTime, task.getCustomReminderDateTime());
+    }
+    
+    @Test
     void equals_SameObject_ReturnsTrue() {
         assertTrue(task.equals(task));
     }
@@ -119,14 +128,14 @@ class TaskTest {
     @Test
     void equals_EqualObjects_ReturnsTrue() {
         Task equalTask = new Task(task.getId(), task.getTitle(), task.getDescription(), task.getDueDate(), 
-                                 task.getStatus(), task.getPriority(), task.getTaskList(), task.getCreated(), task.getUpdated());
+                                 task.getStatus(), task.getPriority(), task.getTaskList(), task.getCreated(), task.getUpdated(), task.getCustomReminderDateTime());
         
         assertTrue(task.equals(equalTask));
     }
     
     @Test
     void equals_DifferentObjects_ReturnsFalse() {
-        Task differentTask = new Task(UUID.randomUUID(), "Different", "Different", now, TaskStatus.OPEN, TaskPriority.LOW, taskList, now, now);
+        Task differentTask = new Task(UUID.randomUUID(), "Different", "Different", now, TaskStatus.OPEN, TaskPriority.LOW, taskList, now, now, null);
         
         assertFalse(task.equals(differentTask));
         assertFalse(task.equals(null));
