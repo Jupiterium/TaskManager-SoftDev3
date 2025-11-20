@@ -27,13 +27,13 @@ const TaskListScreen: React.FC = () => {
   };
 
   return (
-    <div className="p-4 max-w-sm w-full">
+    <div className="p-6 max-w-2xl mx-auto scale-100">
       <h1 className="text-2xl font-bold mb-4 pr-2">My Task Lists</h1>
       <Button
         onPress={handleCreateTaskList}
         color="primary"
         startContent={<Plus size={20} aria-hidden="true" />}
-        className="w-full mb-4"
+        className="w-full mb-4 min-w-96"
         aria-label="Create New Task List"
       >
         Create New Task List
@@ -44,7 +44,7 @@ const TaskListScreen: React.FC = () => {
             key={list.id}
             isPressable
             onPress={() => handleSelectTaskList(list.id)}
-            className="mb-4 w-full"
+            className="mb-4 w-full min-w-96"
             role="button"
             aria-label={`Select task list: ${list.title}`}
           >

@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useReducer, useEffect } from "react";
+import React, { createContext, useContext, useReducer, useEffect, useState } from "react";
 import axios from "axios";
 import TaskList from "./domain/TaskList";
 import Task from "./domain/Task";
+import { useOfflineStatus } from "./hooks/useOfflineStatus";
 
 interface AppState {
   taskLists: TaskList[];
@@ -142,6 +143,7 @@ const initialState: AppState = {
 // Context
 interface AppContextType {
   state: AppState;
+  isOnline: boolean;
   api: {
     fetchTaskLists: () => Promise<void>;
     getTaskList: (id: string) => Promise<void>;
@@ -172,39 +174,51 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [isOnline, setIsOnline] = useState(true);
 
   const jsonHeaders = {
     headers: { "Content-Type": "application/json" },
   };
 
+  const handleApiCall = async <T>(apiCall: () => Promise<T>): Promise<T> => {
+    try {
+      const result = await apiCall();
+      setIsOnline(true);
+      return result;
+    } catch (error) {
+      // Only show offline banner for actual connection issues
+      if (axios.isAxiosError(error) && (!error.response || error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK')) {
+        setIsOnline(false);
+        throw new Error('Connection failed. Please check your connection.');
+      }
+      // For validation errors (400, 500, etc.) don't show offline banner
+      throw error;
+    }
+  };
+
   // API calls
   const api: AppContextType["api"] = {
     fetchTaskLists: async () => {
-      const response = await axios.get<TaskList[]>(
-        "/api/task-lists",
-        jsonHeaders
+      const response = await handleApiCall(() => 
+        axios.get<TaskList[]>("/api/task-lists", jsonHeaders)
       );
       dispatch({ type: FETCH_TASKLISTS, payload: response.data });
     },
     getTaskList: async (id: string) => {
-      const response = await axios.get<TaskList>(
-        `/api/task-lists/${id}`,
-        jsonHeaders
+      const response = await handleApiCall(() => 
+        axios.get<TaskList>(`/api/task-lists/${id}`, jsonHeaders)
       );
       dispatch({ type: GET_TASKLIST, payload: response.data });
     },
     createTaskList: async (taskList) => {
-      const response = await axios.post<TaskList>(
-        "/api/task-lists",
-        taskList,
-        jsonHeaders
+      const response = await handleApiCall(() => 
+        axios.post<TaskList>("/api/task-lists", taskList, jsonHeaders)
       );
       dispatch({ type: CREATE_TASKLIST, payload: response.data });
     },
     getTask: async (taskListId: string, taskId: string) => {
-      const response = await axios.get<Task>(
-        `/api/task-lists/${taskListId}/tasks/${taskId}`,
-        jsonHeaders
+      const response = await handleApiCall(() => 
+        axios.get<Task>(`/api/task-lists/${taskListId}/tasks/${taskId}`, jsonHeaders)
       );
       dispatch({
         type: GET_TASK,
@@ -212,21 +226,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       });
     },
     updateTaskList: async (id, taskList) => {
-      const response = await axios.put<TaskList>(
-        `/api/task-lists/${id}`,
-        taskList,
-        jsonHeaders
+      const response = await handleApiCall(() => 
+        axios.put<TaskList>(`/api/task-lists/${id}`, taskList, jsonHeaders)
       );
       dispatch({ type: UPDATE_TASKLIST, payload: response.data });
     },
     deleteTaskList: async (id) => {
-      await axios.delete(`/api/task-lists/${id}`, jsonHeaders);
+      await handleApiCall(() => 
+        axios.delete(`/api/task-lists/${id}`, jsonHeaders)
+      );
       dispatch({ type: DELETE_TASKLIST, payload: id });
     },
     fetchTasks: async (taskListId) => {
-      const response = await axios.get<Task[]>(
-        `/api/task-lists/${taskListId}/tasks`,
-        jsonHeaders
+      const response = await handleApiCall(() => 
+        axios.get<Task[]>(`/api/task-lists/${taskListId}/tasks`, jsonHeaders)
       );
       dispatch({
         type: FETCH_TASKS,
@@ -234,10 +247,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       });
     },
     createTask: async (taskListId, task) => {
-      const response = await axios.post<Task>(
-        `/api/task-lists/${taskListId}/tasks`,
-        task,
-        jsonHeaders
+      const response = await handleApiCall(() => 
+        axios.post<Task>(`/api/task-lists/${taskListId}/tasks`, task, jsonHeaders)
       );
       dispatch({
         type: CREATE_TASK,
@@ -245,10 +256,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       });
     },
     updateTask: async (taskListId, taskId, task) => {
-      const response = await axios.put<Task>(
-        `/api/task-lists/${taskListId}/tasks/${taskId}`,
-        task,
-        jsonHeaders
+      const response = await handleApiCall(() => 
+        axios.put<Task>(`/api/task-lists/${taskListId}/tasks/${taskId}`, task, jsonHeaders)
       );
       dispatch({
         type: UPDATE_TASK,
@@ -256,17 +265,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       });
     },
     deleteTask: async (taskListId, taskId) => {
-      await axios.delete(
-        `/api/task-lists/${taskListId}/tasks/${taskId}`,
-        jsonHeaders
+      await handleApiCall(() => 
+        axios.delete(`/api/task-lists/${taskListId}/tasks/${taskId}`, jsonHeaders)
       );
       dispatch({ type: DELETE_TASK, payload: { taskListId, taskId } });
     },
     setCustomReminder: async (taskListId, taskId, reminderDateTime) => {
-      const response = await axios.put<Task>(
-        `/api/task-lists/${taskListId}/tasks/${taskId}/reminder`,
-        reminderDateTime.toISOString(),
-        jsonHeaders
+      const response = await handleApiCall(() => 
+        axios.put<Task>(`/api/task-lists/${taskListId}/tasks/${taskId}/reminder`, reminderDateTime.toISOString(), jsonHeaders)
       );
       dispatch({
         type: UPDATE_TASK,
@@ -274,9 +280,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       });
     },
     removeCustomReminder: async (taskListId, taskId) => {
-      const response = await axios.delete<Task>(
-        `/api/task-lists/${taskListId}/tasks/${taskId}/reminder`,
-        jsonHeaders
+      const response = await handleApiCall(() => 
+        axios.delete<Task>(`/api/task-lists/${taskListId}/tasks/${taskId}/reminder`, jsonHeaders)
       );
       dispatch({
         type: UPDATE_TASK,
@@ -290,7 +295,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   return (
-    <AppContext.Provider value={{ state, api }}>{children}</AppContext.Provider>
+    <AppContext.Provider value={{ state, isOnline, api }}>{children}</AppContext.Provider>
   );
 };
 
