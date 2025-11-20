@@ -10,7 +10,7 @@ const BackOnlineBanner: React.FC<BackOnlineBannerProps> = ({ isVisible }) => {
   if (!isVisible) return null;
 
   return (
-    <Card className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-500 text-white p-3 shadow-lg transition-opacity duration-500">
+    <Card className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-500 text-white px-10 py-3 shadow-lg transition-opacity duration-700">
       <div className="flex items-center space-x-2">
         <Wifi size={20} />
         <span className="font-medium">Back online!</span>

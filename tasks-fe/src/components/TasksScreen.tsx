@@ -177,9 +177,11 @@ const TaskListScreen: React.FC = () => {
                 </Button>
               )}
               <Button
-                variant="ghost"
+                variant="bordered"
+                color="danger"
                 onClick={() => api.deleteTask(listId, task.id)}
                 aria-label={`Delete task "${task.title}"`}
+                className="hover:bg-danger hover:text-white"
               >
                 <Trash className="h-4 w-4" />
               </Button>
@@ -193,7 +195,7 @@ const TaskListScreen: React.FC = () => {
   };
 
   if (isLoading) {
-    return <Spinner />; // Or your preferred loading indicator
+    return <Spinner />;
   }
 
   return (
@@ -238,8 +240,9 @@ const TaskListScreen: React.FC = () => {
         onClick={() => navigate(`/task-lists/${listId}/new-task`)}
         aria-label="Add new task"
         className="mb-4 w-full"
+        color="primary"
       >
-        <Plus className="h-4 w-4" /> Add Task
+        <Plus className="h-4 w-4" /> Add a Task
       </Button>
       <div className="border rounded-lg overflow-hidden">
         <Table className="w-full" aria-label="Tasks list">
@@ -257,12 +260,14 @@ const TaskListScreen: React.FC = () => {
       <Spacer y={4} />
       <div className="flex justify-end">
         <Button
+          variant="bordered"
           color="danger"
           startContent={<Minus size={20} />}
           onClick={deleteTaskList}
           aria-label="Delete current task list"
+          className="hover:bg-danger hover:text-white"
         >
-          Delete TaskList
+          Delete Task List
         </Button>
       </div>
 

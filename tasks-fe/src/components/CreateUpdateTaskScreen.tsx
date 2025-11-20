@@ -76,7 +76,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
         if (axios.isAxiosError(error)) {
           setError(error.response?.data?.message || error.message);
         } else {
-          setError("An unknown error occurred");
+          setError("Error. Backend is most likely down.");
         }
       } finally {
         setIsLoading(false);
