@@ -16,6 +16,7 @@ public class NotificationMapperImpl implements NotificationMapper {
                 notification.getMessage(),
                 notification.getType(),
                 notification.getTask() != null ? notification.getTask().getId() : null,
+                notification.getTask() != null && notification.getTask().getTaskList() != null ? notification.getTask().getTaskList().getId() : null,
                 notification.getTask() != null ? notification.getTask().getTitle() : null,
                 notification.isRead(),
                 notification.getCreated()

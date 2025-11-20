@@ -52,9 +52,12 @@ const NotificationPanel: React.FC = () => {
   };
 
   const handleNotificationClick = (notification: Notification) => {
-    if (notification.taskId) {
-      // Navigate to task detail - you'll need to adjust this based on your routing
-      navigate(`/task-lists/${notification.taskId}`);
+    if (notification.taskId && notification.taskListId) {
+      // Navigate to edit task page
+      navigate(`/task-lists/${notification.taskListId}/edit-task/${notification.taskId}`);
+    } else if (notification.taskListId) {
+      // Navigate to task list if only taskListId is available
+      navigate(`/task-lists/${notification.taskListId}`);
     }
     markAsRead(notification.id);
     setIsOpen(false);
