@@ -17,6 +17,9 @@ import { ArrowLeft, Bell, BellOff, Edit, Minus, Plus, Trash } from "lucide-react
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../AppProvider";
+import Breadcrumb from "./Breadcrumb";
+import { getTaskStatusColor, getPriorityColor } from "../utils/taskColors";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Task from "../domain/Task";
 import { TaskStatus } from "../domain/TaskStatus";
 
@@ -25,6 +28,14 @@ const TaskListScreen: React.FC = () => {
   const { listId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  
+  useKeyboardShortcuts({
+    onEscape: () => {
+      api.fetchTaskLists();
+      navigate('/');
+    },
+    onAltN: () => navigate(`/task-lists/${listId}/new-task`)
+  });
 
   // Find task list directly from state instead of maintaining separate state
   const taskList = state.taskLists.find((tl) => listId === tl.id);
@@ -77,7 +88,10 @@ const TaskListScreen: React.FC = () => {
 
       api
         .updateTask(listId, task.id, updatedTask)
-        .then(() => api.fetchTasks(listId));
+        .then(() => {
+          api.fetchTasks(listId);
+          api.fetchTaskLists();
+        });
     }
   };
 
@@ -92,7 +106,7 @@ const TaskListScreen: React.FC = () => {
     if (null != listId && null != state.tasks[listId]) {
       return state.tasks[listId].map((task) => (
         <TableRow key={task.id} className="border-t">
-          <TableCell className="px-4 py-2">
+          <TableCell className="px-4 py-2 text-center">
             <Checkbox
               isSelected={TaskStatus.CLOSED == task.status}
               onValueChange={() => toggleStatus(task)}
@@ -102,7 +116,9 @@ const TaskListScreen: React.FC = () => {
             />
           </TableCell>
           <TableCell className="px-4 py-2">{task.title}</TableCell>
-          <TableCell className="px-4 py-2">{task.priority}</TableCell>
+          <TableCell className="px-4 py-2 text-center">
+            <div className={`w-3 h-3 rounded-full ${getPriorityColor(task.priority)} mx-auto`}></div>
+          </TableCell>
           <TableCell className="px-4 py-2">
             {task.dueDate && (
               <DateInput
@@ -123,7 +139,9 @@ const TaskListScreen: React.FC = () => {
                 </span>
               </div>
             ) : (
-              <BellOff className="h-4 w-4 text-gray-400" />
+              <div className="flex justify-center">
+                <BellOff className="h-4 w-4 text-gray-400" />
+              </div>
             )}
           </TableCell>
           <TableCell className="px-4 py-2">
@@ -180,12 +198,19 @@ const TaskListScreen: React.FC = () => {
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
+      <Breadcrumb items={[
+        { label: taskList ? taskList.title : 'Loading...' }
+      ]} />
+      
       <div className="flex items-center justify-between mb-6">
         <div className="flex w-full items-center justify-between">
           <Button
             variant="ghost"
             aria-label="Go back to Task Lists"
-            onClick={() => navigate("/")}
+            onClick={() => {
+              api.fetchTaskLists();
+              navigate("/");
+            }}
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>

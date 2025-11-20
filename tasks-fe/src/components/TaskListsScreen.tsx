@@ -3,6 +3,7 @@ import { List, Plus } from "lucide-react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../AppProvider";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
 const TaskListScreen: React.FC = () => {
   const { state, api } = useAppContext();
@@ -16,6 +17,10 @@ const TaskListScreen: React.FC = () => {
 
   // Get a handle on the router
   const navigate = useNavigate();
+  
+  useKeyboardShortcuts({
+    onAltN: () => navigate('/new-task-list')
+  });
 
   const handleCreateTaskList = () => {
     navigate("/new-task-list");
