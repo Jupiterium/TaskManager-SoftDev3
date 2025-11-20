@@ -8,14 +8,16 @@ import TaskListScreen from "./components/TasksScreen";
 import CreateUpdateTaskScreen from "./components/CreateUpdateTaskScreen";
 import NotificationPanel from "./components/NotificationPanel";
 import OfflineBanner from "./components/OfflineBanner";
+import BackOnlineBanner from "./components/BackOnlineBanner";
 import { NextUIProvider } from "@nextui-org/react";
 
 const AppContent: React.FC = () => {
-  const { isOnline } = useAppContext();
+  const { isOnline, showBackOnline } = useAppContext();
   
   return (
     <BrowserRouter>
       <OfflineBanner isVisible={!isOnline} />
+      <BackOnlineBanner isVisible={showBackOnline} />
       <div className="fixed top-4 right-4 z-50">
         <NotificationPanel />
       </div>

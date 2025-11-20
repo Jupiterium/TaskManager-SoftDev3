@@ -2,6 +2,7 @@ import React, { createContext, useContext, useReducer, useEffect, useState } fro
 import axios from "axios";
 import TaskList from "./domain/TaskList";
 import Task from "./domain/Task";
+import { Notification } from "./domain/Notification";
 import { useOfflineStatus } from "./hooks/useOfflineStatus";
 
 interface AppState {
@@ -144,6 +145,7 @@ const initialState: AppState = {
 interface AppContextType {
   state: AppState;
   isOnline: boolean;
+  showBackOnline: boolean;
   api: {
     fetchTaskLists: () => Promise<void>;
     getTaskList: (id: string) => Promise<void>;
@@ -164,6 +166,9 @@ interface AppContextType {
     deleteTask: (taskListId: string, taskId: string) => Promise<void>;
     setCustomReminder: (taskListId: string, taskId: string, reminderDateTime: Date) => Promise<void>;
     removeCustomReminder: (taskListId: string, taskId: string) => Promise<void>;
+    fetchNotifications: () => Promise<Notification[]>;
+    markNotificationAsRead: (notificationId: string) => Promise<void>;
+    deleteNotification: (notificationId: string) => Promise<void>;
   };
 }
 
@@ -175,6 +180,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOnline, setIsOnline] = useState(true);
+  const [showBackOnline, setShowBackOnline] = useState(false);
 
   const jsonHeaders = {
     headers: { "Content-Type": "application/json" },
@@ -183,15 +189,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   const handleApiCall = async <T>(apiCall: () => Promise<T>): Promise<T> => {
     try {
       const result = await apiCall();
-      setIsOnline(true);
+      // Connection recovered
+      if (!isOnline) {
+        console.log('Connection recovered!');
+        setIsOnline(true);
+        setShowBackOnline(true);
+        setTimeout(() => setShowBackOnline(false), 2000);
+      }
       return result;
     } catch (error) {
-      // Only show offline banner for actual connection issues
-      if (axios.isAxiosError(error) && (!error.response || error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK')) {
+      console.log('API Error details:', {
+        error,
+        isAxiosError: axios.isAxiosError(error),
+        code: axios.isAxiosError(error) ? error.code : 'no code',
+        response: axios.isAxiosError(error) ? error.response : 'no response',
+        message: error instanceof Error ? error.message : 'unknown'
+      });
+      
+      // Show offline for connection issues OR server errors (500)
+      if (axios.isAxiosError(error) && 
+          (!error.response || error.response.status >= 500)) {
+        console.log('Setting offline - server unavailable');
         setIsOnline(false);
         throw new Error('Connection failed. Please check your connection.');
       }
-      // For validation errors (400, 500, etc.) don't show offline banner
+      
+      // For server errors (500, 400, etc.) - server is responding
       throw error;
     }
   };
@@ -288,6 +311,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         payload: { taskListId, taskId, task: response.data },
       });
     },
+    fetchNotifications: async () => {
+      try {
+        const response = await handleApiCall(() => 
+          axios.get<Notification[]>("/notifications/unread", jsonHeaders)
+        );
+        return Array.isArray(response.data) ? response.data : [];
+      } catch (error) {
+        return [];
+      }
+    },
+    markNotificationAsRead: async (notificationId) => {
+      await handleApiCall(() => 
+        axios.put(`/notifications/${notificationId}/read`, {}, jsonHeaders)
+      );
+    },
+    deleteNotification: async (notificationId) => {
+      await handleApiCall(() => 
+        axios.delete(`/notifications/${notificationId}`, jsonHeaders)
+      );
+    },
   };
 
   useEffect(() => {
@@ -295,7 +338,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   return (
-    <AppContext.Provider value={{ state, isOnline, api }}>{children}</AppContext.Provider>
+    <AppContext.Provider value={{ state, isOnline, showBackOnline, api }}>{children}</AppContext.Provider>
   );
 };
 

@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { useAppContext } from "../AppProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import DebugErrorMessage from "./DebugErrorMessage";
 import { TaskPriority } from "../domain/TaskPriority";
 import { DatePicker } from "@nextui-org/date-picker";
 import { TaskStatus } from "../domain/TaskStatus";
@@ -167,7 +168,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
           {isUpdate ? "Update Task" : "Create Task"}
         </h1>
       </div>
-      {error && <Card className="mb-4 p-4 text-red-500">{error}</Card>}
+      <DebugErrorMessage message={error} isVisible={!!error} />
       <form onSubmit={(e) => e.preventDefault()}>
         <Input
           label="Title"

@@ -11,29 +11,31 @@ import {
 import { Bell, X, ExternalLink } from "lucide-react";
 import { Notification } from "../domain/Notification";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../AppProvider";
 
 const NotificationPanel: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { api } = useAppContext();
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch("http://localhost:8081/notifications/unread");
-      const data = await response.json();
-      setNotifications(data);
-      setUnreadCount(data.filter((n: Notification) => !n.isRead).length);
+      const data = await api.fetchNotifications();
+      setNotifications(data || []);
+      setUnreadCount((data || []).filter((n: Notification) => !n.isRead).length);
     } catch (error) {
+      // On error, set empty arrays to prevent crashes
+      setNotifications([]);
+      setUnreadCount(0);
       console.error("Failed to fetch notifications:", error);
     }
   };
 
   const markAsRead = async (notificationId: string) => {
     try {
-      await fetch(`http://localhost:8081/notifications/${notificationId}/read`, {
-        method: "PUT",
-      });
+      await api.markNotificationAsRead(notificationId);
       fetchNotifications();
     } catch (error) {
       console.error("Failed to mark notification as read:", error);
@@ -42,9 +44,7 @@ const NotificationPanel: React.FC = () => {
 
   const dismissNotification = async (notificationId: string) => {
     try {
-      await fetch(`http://localhost:8081/notifications/${notificationId}`, {
-        method: "DELETE",
-      });
+      await api.deleteNotification(notificationId);
       fetchNotifications();
     } catch (error) {
       console.error("Failed to dismiss notification:", error);

@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { useAppContext } from "../AppProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import DebugErrorMessage from "./DebugErrorMessage";
 
 const CreateUpdateTaskListScreen: React.FC = () => {
   const { state, api } = useAppContext();
@@ -96,7 +97,7 @@ const CreateUpdateTaskListScreen: React.FC = () => {
           {isUpdate ? "Update Task List" : "Create Task List"}
         </h1>
       </div>
-      {error.length > 0 && <Card>{error}</Card>}
+      <DebugErrorMessage message={error} isVisible={error.length > 0} />
       <form onSubmit={handleSubmit}>
         <Input
           label="Title"
