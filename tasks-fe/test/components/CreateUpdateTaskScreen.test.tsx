@@ -60,4 +60,10 @@ describe('CreateUpdateTaskScreen', () => {
     fireEvent.click(highPriorityChip)
     expect(highPriorityChip).toBeInTheDocument()
   })
+
+  it('renders custom reminder date picker', async () => {
+    renderWithRouter(<CreateUpdateTaskScreen />)
+    const reminderPicker = await screen.findByText(/custom reminder/i)
+    expect(reminderPicker).toBeInTheDocument()
+  })
 })

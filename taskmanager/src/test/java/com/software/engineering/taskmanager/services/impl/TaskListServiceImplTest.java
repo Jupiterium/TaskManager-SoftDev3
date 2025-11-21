@@ -71,7 +71,7 @@ class TaskListServiceImplTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskListService.createTaskList(inputTaskList));
         
-        assertEquals("Task list title must be present! ", exception.getMessage());
+        assertEquals("Task list title must be present!", exception.getMessage());
     }
     
     @Test
@@ -81,7 +81,7 @@ class TaskListServiceImplTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskListService.createTaskList(inputTaskList));
         
-        assertEquals("Task list title must be present! ", exception.getMessage());
+        assertEquals("Task list title must be present!", exception.getMessage());
     }
     
     @Test
@@ -114,7 +114,7 @@ class TaskListServiceImplTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskListService.updateTaskList(null, updateTaskList));
         
-        assertEquals("Task list must have an ID", exception.getMessage());
+        assertEquals("Task list must have an ID!", exception.getMessage());
     }
     
     @Test

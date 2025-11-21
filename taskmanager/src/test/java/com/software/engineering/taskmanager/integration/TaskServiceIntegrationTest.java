@@ -101,4 +101,36 @@ class TaskServiceIntegrationTest {
         Optional<Task> deletedTask = taskService.getTask(savedTaskList.getId(), createdTask.getId());
         assertThat(deletedTask).isEmpty();
     }
+    
+    @Test
+    void createTaskWithCustomReminder_IntegrationTest() {
+        LocalDateTime reminderTime = LocalDateTime.now().plusHours(2);
+        Task task = new Task(null, "Task with Reminder", "Has custom reminder", null, null, TaskPriority.MEDIUM, null, null, null, reminderTime);
+
+        Task createdTask = taskService.createTask(savedTaskList.getId(), task);
+
+        assertThat(createdTask.getCustomReminderDateTime()).isEqualTo(reminderTime);
+        
+        Optional<Task> retrievedTask = taskService.getTask(savedTaskList.getId(), createdTask.getId());
+        assertThat(retrievedTask).isPresent();
+        assertThat(retrievedTask.get().getCustomReminderDateTime()).isEqualTo(reminderTime);
+    }
+    
+    @Test
+    void updateTaskCustomReminder_IntegrationTest() {
+        Task task = new Task(null, "Task for Reminder Update", "Description", null, null, TaskPriority.LOW, null, null, null, null);
+        Task createdTask = taskService.createTask(savedTaskList.getId(), task);
+        
+        LocalDateTime reminderTime = LocalDateTime.now().plusHours(3);
+        Task updateTask = new Task(createdTask.getId(), "Updated Task", "Updated Description", null, TaskStatus.OPEN, TaskPriority.LOW, null, null, null, reminderTime);
+        Task updatedTask = taskService.updateTask(savedTaskList.getId(), createdTask.getId(), updateTask);
+
+        assertThat(updatedTask.getCustomReminderDateTime()).isEqualTo(reminderTime);
+        
+        // Remove reminder
+        Task removeReminderTask = new Task(createdTask.getId(), "Updated Task", "Updated Description", null, TaskStatus.OPEN, TaskPriority.LOW, null, null, null, null);
+        Task taskWithoutReminder = taskService.updateTask(savedTaskList.getId(), createdTask.getId(), removeReminderTask);
+        
+        assertThat(taskWithoutReminder.getCustomReminderDateTime()).isNull();
+    }
 }

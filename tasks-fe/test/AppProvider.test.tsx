@@ -1,10 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { AppProvider, useAppContext } from '../src/AppProvider'
 import axios from 'axios'
 
 vi.mock('axios')
 const mockedAxios = vi.mocked(axios)
+
+// Mock the useOfflineStatus hook
+vi.mock('../src/hooks/useOfflineStatus', () => ({
+  useOfflineStatus: () => ({})
+}))
 
 const TestComponent = () => {
   const { state, api } = useAppContext()
@@ -59,4 +64,6 @@ describe('AppProvider', () => {
       })
     })
   })
+
+
 })

@@ -186,7 +186,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     headers: { "Content-Type": "application/json" },
   };
 
-  const handleApiCall = async <T>(apiCall: () => Promise<T>): Promise<T> => {
+  const handleApiCall = async <T,>(apiCall: () => Promise<T>): Promise<T> => {
     try {
       const result = await apiCall();
       // Connection recovered
