@@ -68,7 +68,7 @@ const NotificationPanel: React.FC = () => {
     // Poll for new notifications every 30 seconds
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [api]);
 
   return (
     <Popover isOpen={isOpen} onOpenChange={setIsOpen} placement="bottom-end">
