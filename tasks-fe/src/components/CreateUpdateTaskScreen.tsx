@@ -4,6 +4,9 @@ import { ArrowLeft } from "lucide-react";
 import { useAppContext } from "../AppProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import Breadcrumb from "./Breadcrumb";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
+import DebugErrorMessage from "./DebugErrorMessage";
 import { TaskPriority } from "../domain/TaskPriority";
 import { DatePicker } from "@nextui-org/date-picker";
 import { TaskStatus } from "../domain/TaskStatus";
@@ -13,6 +16,11 @@ const CreateUpdateTaskScreen: React.FC = () => {
   const { state, api } = useAppContext();
   const { listId, taskId } = useParams();
   const navigate = useNavigate();
+  
+  // Get task list and current task for breadcrumb
+  const taskList = state.taskLists.find(tl => tl.id === listId);
+  const task = listId && taskId && state.tasks[listId] ? 
+    state.tasks[listId].find(t => t.id === taskId) : null;
 
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdate, setIsUpdate] = useState(false);
@@ -68,7 +76,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
         if (axios.isAxiosError(error)) {
           setError(error.response?.data?.message || error.message);
         } else {
-          setError("An unknown error occurred");
+          setError("Error. Backend is most likely down.");
         }
       } finally {
         setIsLoading(false);
@@ -99,6 +107,11 @@ const CreateUpdateTaskScreen: React.FC = () => {
   const createUpdateTask = async () => {
     try {
       if (!listId) return;
+      
+      if (!title || title.trim() === '') {
+        setError('Task must have a title!');
+        return;
+      }
 
       if (isUpdate && taskId) {
         await api.updateTask(listId, taskId, {
@@ -121,6 +134,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
         });
       }
 
+      api.fetchTaskLists();
       navigate(`/task-lists/${listId}`);
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -149,12 +163,23 @@ const CreateUpdateTaskScreen: React.FC = () => {
     setCustomReminderDateTime(dateTime ? new Date(dateTime.toString()) : undefined);
   };
 
+  useKeyboardShortcuts({
+    onEscape: () => navigate(`/task-lists/${listId}`),
+    onAltEnter: createUpdateTask,
+    onAltS: createUpdateTask
+  });
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="p-4 max-w-md mx-auto">
+      <Breadcrumb items={[
+        { label: taskList?.title || 'Task List', path: `/task-lists/${listId}` },
+        { label: isUpdate ? (task?.title || 'Edit Task') : 'New Task' }
+      ]} />
+      
       <div className="flex items-center space-x-4 mb-6">
         <Button 
           variant="ghost"
@@ -167,7 +192,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
           {isUpdate ? "Update Task" : "Create Task"}
         </h1>
       </div>
-      {error && <Card className="mb-4 p-4 text-red-500">{error}</Card>}
+      <DebugErrorMessage message={error} isVisible={!!error} />
       <form onSubmit={(e) => e.preventDefault()}>
         <Input
           label="Title"
@@ -176,6 +201,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
           onChange={(e) => setTitle(e.target.value)}
           required
           fullWidth
+          autoFocus
         />
         <Spacer y={1} />
         <Textarea

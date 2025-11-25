@@ -11,6 +11,7 @@ public record NotificationDto(
         String message,
         NotificationType type,
         UUID taskId,
+        UUID taskListId,
         String taskTitle,
         boolean isRead,
         LocalDateTime created

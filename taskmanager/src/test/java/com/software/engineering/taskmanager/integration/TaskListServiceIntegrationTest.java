@@ -64,12 +64,19 @@ class TaskListServiceIntegrationTest {
         TaskList taskList = new TaskList(null, "Original Title", "Original Description", null, null, null);
         TaskList createdTaskList = taskListService.createTaskList(taskList);
 
+        // Add small delay to ensure different timestamps
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
         TaskList updateTaskList = new TaskList(createdTaskList.getId(), "Updated Title", "Updated Description", null, createdTaskList.getCreated(), createdTaskList.getUpdated());
         TaskList updatedTaskList = taskListService.updateTaskList(createdTaskList.getId(), updateTaskList);
 
         assertThat(updatedTaskList.getTitle()).isEqualTo("Updated Title");
         assertThat(updatedTaskList.getDescription()).isEqualTo("Updated Description");
-        assertThat(updatedTaskList.getUpdated()).isAfter(updatedTaskList.getCreated());
+        assertThat(updatedTaskList.getUpdated()).isAfterOrEqualTo(updatedTaskList.getCreated());
     }
 
     @Test

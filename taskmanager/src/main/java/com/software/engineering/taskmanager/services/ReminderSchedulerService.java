@@ -22,12 +22,12 @@ public class ReminderSchedulerService {
         this.notificationService = notificationService;
     }
 
-    @Scheduled(fixedRate = 60000) // Check every minute
+    @Scheduled(fixedRate = 10000) // Check every 10 seconds
     public void checkCustomReminders() {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime oneMinuteAgo = now.minusMinutes(1);
+        LocalDateTime tenSecondsAgo = now.minusSeconds(10);
         
-        List<Task> tasksWithReminders = taskRepository.findByCustomReminderDateTimeBetween(oneMinuteAgo, now);
+        List<Task> tasksWithReminders = taskRepository.findByCustomReminderDateTimeBetween(tenSecondsAgo, now);
         
         for (Task task : tasksWithReminders) {
             notificationService.createCustomReminderNotification(task);

@@ -70,7 +70,7 @@ class TaskServiceImplTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.createTask(taskListId, inputTask));
         
-        assertEquals("Task already has an ID", exception.getMessage());
+        assertEquals("Task already has an ID!", exception.getMessage());
     }
     
     @Test
@@ -80,7 +80,7 @@ class TaskServiceImplTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.createTask(taskListId, inputTask));
         
-        assertEquals("Task must have a title", exception.getMessage());
+        assertEquals("Task must have a title!", exception.getMessage());
     }
     
     @Test
@@ -90,7 +90,7 @@ class TaskServiceImplTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.createTask(taskListId, inputTask));
         
-        assertEquals("Task must have a title", exception.getMessage());
+        assertEquals("Task must have a title!", exception.getMessage());
     }
     
     @Test
@@ -101,7 +101,7 @@ class TaskServiceImplTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.createTask(taskListId, inputTask));
         
-        assertEquals("Invalid Task List Id provided", exception.getMessage());
+        assertEquals("Invalid Task List Id provided!", exception.getMessage());
     }
     
     @Test
@@ -145,7 +145,7 @@ class TaskServiceImplTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.updateTask(taskListId, taskId, updateTask));
         
-        assertEquals("Task must have an ID", exception.getMessage());
+        assertEquals("Task must have an ID!", exception.getMessage());
     }
     
     @Test
@@ -156,7 +156,7 @@ class TaskServiceImplTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.updateTask(taskListId, taskId, updateTask));
         
-        assertEquals("Task IDs do not match", exception.getMessage());
+        assertEquals("Task IDs do not match!", exception.getMessage());
     }
     
     @Test
@@ -166,7 +166,7 @@ class TaskServiceImplTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.updateTask(taskListId, taskId, updateTask));
         
-        assertEquals("Task must have a valid priority", exception.getMessage());
+        assertEquals("Task must have a valid priority!", exception.getMessage());
     }
     
     @Test
@@ -176,7 +176,7 @@ class TaskServiceImplTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> taskService.updateTask(taskListId, taskId, updateTask));
         
-        assertEquals("Task must have a valid status", exception.getMessage());
+        assertEquals("Task must have a valid status!", exception.getMessage());
     }
     
     @Test
@@ -195,5 +195,46 @@ class TaskServiceImplTest {
         taskService.deleteTask(taskListId, taskId);
         
         verify(taskRepository).deleteByTaskListIdAndId(taskListId, taskId);
+    }
+    
+    @Test
+    void createTask_WithCustomReminder_SavesCustomReminderDateTime() {
+        LocalDateTime reminderTime = LocalDateTime.now().plusHours(2);
+        Task inputTask = new Task(null, "Task with reminder", "Description", null, null, null, null, null, null, reminderTime);
+        when(taskListRepository.findById(taskListId)).thenReturn(Optional.of(mockTaskList));
+        when(taskRepository.save(any(Task.class))).thenReturn(mockTask);
+        
+        taskService.createTask(taskListId, inputTask);
+        
+        verify(taskRepository).save(argThat(task -> 
+            task.getCustomReminderDateTime() != null && 
+            task.getCustomReminderDateTime().equals(reminderTime)
+        ));
+    }
+    
+    @Test
+    void updateTask_WithCustomReminder_UpdatesCustomReminderDateTime() {
+        LocalDateTime reminderTime = LocalDateTime.now().plusHours(3);
+        Task updateTask = new Task(taskId, "Updated", "Updated desc", null, TaskStatus.OPEN, TaskPriority.HIGH, null, null, null, reminderTime);
+        when(taskRepository.findByTaskListIdAndId(taskListId, taskId)).thenReturn(Optional.of(mockTask));
+        when(taskRepository.save(any(Task.class))).thenReturn(mockTask);
+        
+        taskService.updateTask(taskListId, taskId, updateTask);
+        
+        assertEquals(reminderTime, mockTask.getCustomReminderDateTime());
+        verify(taskRepository).save(mockTask);
+    }
+    
+    @Test
+    void updateTask_RemoveCustomReminder_SetsReminderToNull() {
+        mockTask.setCustomReminderDateTime(LocalDateTime.now().plusHours(1));
+        Task updateTask = new Task(taskId, "Updated", "Updated desc", null, TaskStatus.OPEN, TaskPriority.HIGH, null, null, null, null);
+        when(taskRepository.findByTaskListIdAndId(taskListId, taskId)).thenReturn(Optional.of(mockTask));
+        when(taskRepository.save(any(Task.class))).thenReturn(mockTask);
+        
+        taskService.updateTask(taskListId, taskId, updateTask);
+        
+        assertNull(mockTask.getCustomReminderDateTime());
+        verify(taskRepository).save(mockTask);
     }
 }

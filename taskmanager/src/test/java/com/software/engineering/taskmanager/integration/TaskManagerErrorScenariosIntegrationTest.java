@@ -32,7 +32,7 @@ class TaskManagerErrorScenariosIntegrationTest {
 
         assertThatThrownBy(() -> taskService.createTask(invalidTaskListId, task))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Invalid Task List Id provided");
+                .hasMessage("Invalid Task List Id provided!");
     }
 
     @Test
@@ -45,7 +45,7 @@ class TaskManagerErrorScenariosIntegrationTest {
 
         assertThatThrownBy(() -> taskService.createTask(createdTaskList.getId(), task))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Task already has an ID");
+                .hasMessage("Task already has an ID!");
     }
 
     @Test
@@ -57,7 +57,7 @@ class TaskManagerErrorScenariosIntegrationTest {
 
         assertThatThrownBy(() -> taskService.createTask(createdTaskList.getId(), task))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Task must have a title");
+                .hasMessage("Task must have a title!");
     }
 
     @Test
@@ -69,7 +69,7 @@ class TaskManagerErrorScenariosIntegrationTest {
 
         assertThatThrownBy(() -> taskService.createTask(createdTaskList.getId(), task))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Task must have a title");
+                .hasMessage("Task must have a title!");
     }
 
     @Test
@@ -98,7 +98,7 @@ class TaskManagerErrorScenariosIntegrationTest {
 
         assertThatThrownBy(() -> taskService.updateTask(createdTaskList.getId(), createdTask.getId(), updateTask))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Task IDs do not match");
+                .hasMessage("Task IDs do not match!");
     }
 
     @Test
@@ -117,7 +117,7 @@ class TaskManagerErrorScenariosIntegrationTest {
 
         assertThatThrownBy(() -> taskListService.createTaskList(taskList))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Task list title must be present! ");
+                .hasMessage("Task list title must be present!");
     }
 
     @Test
@@ -126,7 +126,7 @@ class TaskManagerErrorScenariosIntegrationTest {
 
         assertThatThrownBy(() -> taskListService.createTaskList(taskList))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Task list title must be present! ");
+                .hasMessage("Task list title must be present!");
     }
 
     @Test

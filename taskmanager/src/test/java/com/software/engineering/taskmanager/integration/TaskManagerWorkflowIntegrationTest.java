@@ -95,4 +95,36 @@ class TaskManagerWorkflowIntegrationTest {
         assertThat(taskListService.getTaskList(createdTaskList.getId())).isEmpty();
         assertThat(taskService.listTasks(createdTaskList.getId())).isEmpty();
     }
+    
+    @Test
+    @Transactional
+    void customReminderWorkflow_IntegrationTest() {
+        // Create TaskList
+        TaskList taskList = new TaskList(null, "Reminder Project", "Tasks with custom reminders", null, null, null);
+        TaskList createdTaskList = taskListService.createTaskList(taskList);
+
+        // Create task with custom reminder
+        LocalDateTime reminderTime = LocalDateTime.now().plusHours(2);
+        Task taskWithReminder = new Task(null, "Important Meeting", "Prepare presentation", LocalDateTime.now().plusDays(1), null, TaskPriority.HIGH, null, null, null, reminderTime);
+        Task createdTask = taskService.createTask(createdTaskList.getId(), taskWithReminder);
+
+        // Verify reminder was set
+        assertThat(createdTask.getCustomReminderDateTime()).isEqualTo(reminderTime);
+
+        // Update reminder time
+        LocalDateTime newReminderTime = LocalDateTime.now().plusHours(4);
+        Task updateTask = new Task(createdTask.getId(), "Important Meeting", "Updated presentation prep", createdTask.getDueDate(), TaskStatus.OPEN, TaskPriority.HIGH, null, null, null, newReminderTime);
+        Task updatedTask = taskService.updateTask(createdTaskList.getId(), createdTask.getId(), updateTask);
+
+        assertThat(updatedTask.getCustomReminderDateTime()).isEqualTo(newReminderTime);
+
+        // Remove reminder
+        Task removeReminderTask = new Task(createdTask.getId(), "Important Meeting", "No reminder needed", createdTask.getDueDate(), TaskStatus.OPEN, TaskPriority.HIGH, null, null, null, null);
+        Task taskWithoutReminder = taskService.updateTask(createdTaskList.getId(), createdTask.getId(), removeReminderTask);
+
+        assertThat(taskWithoutReminder.getCustomReminderDateTime()).isNull();
+        
+        // Verify task still exists without reminder
+        assertThat(taskService.getTask(createdTaskList.getId(), createdTask.getId())).isPresent();
+    }
 }

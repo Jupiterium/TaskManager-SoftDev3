@@ -35,10 +35,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task createTask(UUID taskListId, Task task) {
         if(null != task.getId()){
-            throw new IllegalArgumentException("Task already has an ID");
+            throw new IllegalArgumentException("Task already has an ID!");
         }
         if(null == task.getTitle() || task.getTitle().isBlank()){
-            throw new IllegalArgumentException("Task must have a title");
+            throw new IllegalArgumentException("Task must have a title!");
         }
 
         TaskPriority taskPriority = Optional.ofNullable(task.getPriority())
@@ -47,7 +47,7 @@ public class TaskServiceImpl implements TaskService {
         TaskStatus taskStatus = TaskStatus.OPEN;
 
         TaskList taskList = taskListRepository.findById(taskListId).orElseThrow(() ->
-                new IllegalArgumentException("Invalid Task List Id provided"));
+                new IllegalArgumentException("Invalid Task List Id provided!"));
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -75,16 +75,16 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task updateTask(UUID taskListId, UUID taskId, Task task) {
         if(null == task.getId()){
-            throw new IllegalArgumentException("Task must have an ID");
+            throw new IllegalArgumentException("Task must have an ID!");
         }
         if(!Objects.equals(taskId, task.getId())){
-            throw new IllegalArgumentException("Task IDs do not match");
+            throw new IllegalArgumentException("Task IDs do not match!");
         }
         if(null == task.getPriority()){
-            throw new IllegalArgumentException("Task must have a valid priority");
+            throw new IllegalArgumentException("Task must have a valid priority!");
         }
         if(null == task.getStatus()){
-            throw new IllegalArgumentException("Task must have a valid status");
+            throw new IllegalArgumentException("Task must have a valid status!");
         }
 
         Task existingTask = taskRepository.findByTaskListIdAndId(taskListId, taskId)

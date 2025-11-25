@@ -4,6 +4,9 @@ import { ArrowLeft } from "lucide-react";
 import { useAppContext } from "../AppProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import Breadcrumb from "./Breadcrumb";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
+import DebugErrorMessage from "./DebugErrorMessage";
 
 const CreateUpdateTaskListScreen: React.FC = () => {
   const { state, api } = useAppContext();
@@ -77,7 +80,7 @@ const CreateUpdateTaskListScreen: React.FC = () => {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || err.message);
       } else {
-        setError("An unknown error occurred");
+        setError("Error. Backend is most likely down.");
       }
     }
   };
@@ -86,17 +89,27 @@ const CreateUpdateTaskListScreen: React.FC = () => {
     e.preventDefault();
   };
 
+  useKeyboardShortcuts({
+    onEscape: () => navigate('/'),
+    onAltEnter: createUpdateTaskList,
+    onAltS: createUpdateTaskList
+  });
+
   return (
-    <div className="p-4 max-w-md mx-auto">
+    <div className="p-4 max-w-4xl mx-auto">
+      <Breadcrumb items={[
+        { label: isUpdate ? (title || 'Edit Task List') : 'Create New Task List' }
+      ]} />
+      
       <div className="flex items-center space-x-4 mb-6">
-        <Button onClick={() => navigate("/")}>
+        <Button variant="ghost" onClick={() => navigate("/")}>
           <ArrowLeft size={20} />
         </Button>
         <h1 className="text-2xl font-bold">
-          {isUpdate ? "Update Task List" : "Create Task List"}
+          {isUpdate ? "Update Task List" : "New Task List"}
         </h1>
       </div>
-      {error.length > 0 && <Card>{error}</Card>}
+      <DebugErrorMessage message={error} isVisible={error.length > 0} />
       <form onSubmit={handleSubmit}>
         <Input
           label="Title"
@@ -105,6 +118,7 @@ const CreateUpdateTaskListScreen: React.FC = () => {
           onChange={(e) => setTitle(e.target.value)}
           required
           fullWidth
+          autoFocus
         />
         <Spacer y={1} />
         <Textarea
@@ -115,7 +129,7 @@ const CreateUpdateTaskListScreen: React.FC = () => {
           fullWidth
         />
         <Spacer y={1} />
-        <Button type="submit" color="primary" onClick={createUpdateTaskList}>
+        <Button type="submit" color="primary" onClick={createUpdateTaskList} fullWidth>
           {isUpdate ? "Update Task List" : "Create Task List"}
         </Button>
       </form>

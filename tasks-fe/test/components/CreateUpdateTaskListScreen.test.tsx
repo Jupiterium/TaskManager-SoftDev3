@@ -29,10 +29,10 @@ const renderWithRouter = (component: React.ReactElement) => {
 }
 
 describe('CreateUpdateTaskListScreen', () => {
-  it('renders create mode by default', () => {
+  it('renders create mode by default', async () => {
     renderWithRouter(<CreateUpdateTaskListScreen />)
-    expect(screen.getByRole('heading', { name: /create task list/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /create task list/i })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: /new task list/i })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: /create task list/i })).toBeInTheDocument()
   })
 
   it('allows input in title field', () => {
@@ -49,9 +49,9 @@ describe('CreateUpdateTaskListScreen', () => {
     expect(descInput).toHaveValue('New Description')
   })
 
-  it('navigates back when back button is clicked', () => {
+  it('navigates back when back button is clicked', async () => {
     renderWithRouter(<CreateUpdateTaskListScreen />)
-    const backButton = screen.getByRole('button', { name: '' })
+    const backButton = screen.getAllByRole('button')[0] // First button is the back button
     fireEvent.click(backButton)
     expect(mockNavigate).toHaveBeenCalledWith('/')
   })

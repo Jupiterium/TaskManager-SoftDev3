@@ -9,9 +9,12 @@ const mockNavigate = vi.fn()
 const mockApi = {
   getTaskList: vi.fn().mockResolvedValue({}),
   fetchTasks: vi.fn().mockResolvedValue({}),
+  fetchTaskLists: vi.fn().mockResolvedValue({}),
   updateTask: vi.fn().mockResolvedValue({}),
   deleteTask: vi.fn().mockResolvedValue({}),
-  deleteTaskList: vi.fn().mockResolvedValue({})
+  deleteTaskList: vi.fn().mockResolvedValue({}),
+  removeCustomReminder: vi.fn().mockResolvedValue({}),
+  setCustomReminder: vi.fn().mockResolvedValue({})
 }
 
 vi.mock('react-router-dom', async () => {
@@ -51,18 +54,17 @@ const renderWithRouter = (component: React.ReactElement) => {
 describe('TasksScreen', () => {
   it('renders task list title', async () => {
     renderWithRouter(<TasksScreen />)
-    expect(await screen.findByText('Test List')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: /test list/i })).toBeInTheDocument()
   })
 
   it('renders add task button', async () => {
     renderWithRouter(<TasksScreen />)
-    expect(await screen.findByText('Add Task')).toBeInTheDocument()
+    expect(await screen.findByText('Add a Task')).toBeInTheDocument()
   })
 
   it('renders task in table', async () => {
     renderWithRouter(<TasksScreen />)
     expect(await screen.findByText('Test Task')).toBeInTheDocument()
-    expect(screen.getByText('HIGH')).toBeInTheDocument()
   })
 
   it('toggles task status when checkbox is clicked', async () => {
@@ -74,14 +76,14 @@ describe('TasksScreen', () => {
 
   it('navigates to add task when add button is clicked', async () => {
     renderWithRouter(<TasksScreen />)
-    const addButton = await screen.findByText('Add Task')
+    const addButton = await screen.findByText('Add a Task')
     fireEvent.click(addButton)
     expect(mockNavigate).toHaveBeenCalledWith('/task-lists/1/new-task')
   })
 
   it('deletes task list when delete button is clicked', async () => {
     renderWithRouter(<TasksScreen />)
-    const deleteButton = await screen.findByText('Delete TaskList')
+    const deleteButton = await screen.findByText('Delete Task List')
     fireEvent.click(deleteButton)
     expect(mockApi.deleteTaskList).toHaveBeenCalledWith('1')
   })

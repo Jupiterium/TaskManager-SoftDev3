@@ -111,6 +111,7 @@ class NotificationControllerTest {
                 NotificationType.TASK_DUE_SOON,
                 null,
                 null,
+                null,
                 false,
                 LocalDateTime.now()
         );
