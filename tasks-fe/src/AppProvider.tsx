@@ -314,7 +314,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     fetchNotifications: async () => {
       try {
         const response = await handleApiCall(() => 
-          axios.get<Notification[]>("/notifications/unread", jsonHeaders)
+          axios.get<Notification[]>("/api/notifications/unread", jsonHeaders)
         );
         return Array.isArray(response.data) ? response.data : [];
       } catch (error) {
@@ -323,12 +323,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     markNotificationAsRead: async (notificationId) => {
       await handleApiCall(() => 
-        axios.put(`/notifications/${notificationId}/read`, {}, jsonHeaders)
+        axios.put(`/api/notifications/${notificationId}/read`, {}, jsonHeaders)
       );
     },
     deleteNotification: async (notificationId) => {
       await handleApiCall(() => 
-        axios.delete(`/notifications/${notificationId}`, jsonHeaders)
+        axios.delete(`/api/notifications/${notificationId}`, jsonHeaders)
       );
     },
   };
