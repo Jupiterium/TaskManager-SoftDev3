@@ -1,9 +1,11 @@
 package com.software.engineering.taskmanager.services.impl;
 
+import com.software.engineering.taskmanager.domain.entities.Notification;
 import com.software.engineering.taskmanager.domain.entities.Task;
 import com.software.engineering.taskmanager.domain.entities.TaskList;
 import com.software.engineering.taskmanager.domain.entities.TaskPriority;
 import com.software.engineering.taskmanager.domain.entities.TaskStatus;
+import com.software.engineering.taskmanager.repositories.NotificationRepository;
 import com.software.engineering.taskmanager.repositories.TaskListRepository;
 import com.software.engineering.taskmanager.repositories.TaskRepository;
 import com.software.engineering.taskmanager.services.TaskService;
@@ -20,10 +22,12 @@ import java.util.UUID;
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final TaskListRepository taskListRepository;
+    private final NotificationRepository notificationRepository;
 
-    public TaskServiceImpl(TaskRepository taskRepository, TaskListRepository taskListRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository, TaskListRepository taskListRepository, NotificationRepository notificationRepository) {
         this.taskRepository = taskRepository;
         this.taskListRepository = taskListRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -105,7 +109,11 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Override
     public void deleteTask(UUID taskListId, UUID taskId) {
-        //taskRepository.deleteById(taskId);
+        // First delete all notifications associated with this task
+        List<Notification> taskNotifications = notificationRepository.findByTaskIdOrderByCreatedDesc(taskId);
+        notificationRepository.deleteAll(taskNotifications);
+        
+        // Then delete the task
         taskRepository.deleteByTaskListIdAndId(taskListId, taskId);
     }
 }

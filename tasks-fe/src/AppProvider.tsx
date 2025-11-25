@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect, useState } from "react";
+import React, { createContext, useContext, useReducer, useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import TaskList from "./domain/TaskList";
 import Task from "./domain/Task";
@@ -182,11 +182,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isOnline, setIsOnline] = useState(true);
   const [showBackOnline, setShowBackOnline] = useState(false);
 
-  const jsonHeaders = {
+  const jsonHeaders = useMemo(() => ({
     headers: { "Content-Type": "application/json" },
-  };
+  }), []);
 
-  const handleApiCall = async <T,>(apiCall: () => Promise<T>): Promise<T> => {
+  const handleApiCall = useCallback(async <T,>(apiCall: () => Promise<T>): Promise<T> => {
     try {
       const result = await apiCall();
       // Connection recovered
@@ -217,10 +217,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       // For server errors (500, 400, etc.) - server is responding
       throw error;
     }
-  };
+  }, [isOnline]);
 
-  // API calls
-  const api: AppContextType["api"] = {
+  // API calls - memoized to prevent infinite re-renders
+  const api: AppContextType["api"] = useMemo(() => ({
     fetchTaskLists: async () => {
       const response = await handleApiCall(() => 
         axios.get<TaskList[]>("/api/task-lists", jsonHeaders)
@@ -331,11 +331,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         axios.delete(`/api/notifications/${notificationId}`, jsonHeaders)
       );
     },
-  };
+  }), [handleApiCall, dispatch, jsonHeaders]);
 
   useEffect(() => {
     api.fetchTaskLists();
-  }, []);
+  }, [api]);
 
   return (
     <AppContext.Provider value={{ state, isOnline, showBackOnline, api }}>{children}</AppContext.Provider>

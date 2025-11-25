@@ -1,9 +1,11 @@
 package com.software.engineering.taskmanager.services.impl;
 
+import com.software.engineering.taskmanager.domain.entities.Notification;
 import com.software.engineering.taskmanager.domain.entities.Task;
 import com.software.engineering.taskmanager.domain.entities.TaskList;
 import com.software.engineering.taskmanager.domain.entities.TaskPriority;
 import com.software.engineering.taskmanager.domain.entities.TaskStatus;
+import com.software.engineering.taskmanager.repositories.NotificationRepository;
 import com.software.engineering.taskmanager.repositories.TaskListRepository;
 import com.software.engineering.taskmanager.repositories.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +29,7 @@ class TaskServiceImplTest {
     
     @Mock private TaskRepository taskRepository;
     @Mock private TaskListRepository taskListRepository;
+    @Mock private NotificationRepository notificationRepository;
     @InjectMocks private TaskServiceImpl taskService;
     
     private UUID taskListId = UUID.randomUUID();
@@ -192,8 +195,12 @@ class TaskServiceImplTest {
     
     @Test
     void deleteTask_CallsRepository() {
+        when(notificationRepository.findByTaskIdOrderByCreatedDesc(taskId)).thenReturn(List.of());
+        
         taskService.deleteTask(taskListId, taskId);
         
+        verify(notificationRepository).findByTaskIdOrderByCreatedDesc(taskId);
+        verify(notificationRepository).deleteAll(List.of());
         verify(taskRepository).deleteByTaskListIdAndId(taskListId, taskId);
     }
     

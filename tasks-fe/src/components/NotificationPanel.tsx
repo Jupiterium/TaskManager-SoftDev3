@@ -90,11 +90,11 @@ const NotificationPanel: React.FC = () => {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-0">
+      <PopoverContent className="w-96 p-0">
         <div className="p-4 border-b">
           <h3 className="text-lg font-semibold">Notifications</h3>
         </div>
-        <div className="max-h-96 overflow-y-auto">
+        <div className="max-h-96 overflow-y-auto pb-4">
           {notifications.length === 0 ? (
             <div className="p-4 text-center text-gray-500">
               No new notifications
