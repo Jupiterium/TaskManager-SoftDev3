@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Textarea, Spacer, Card, Chip } from "@nextui-org/react";
+import { Button, Input, Textarea, Spacer, Chip } from "@nextui-org/react";
 import { ArrowLeft } from "lucide-react";
 import { useAppContext } from "../AppProvider";
 import { useNavigate, useParams } from "react-router-dom";
@@ -45,7 +45,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
         console.log("Loading initial data...");
         
         // First ensure we have the task list
-        if (!state.taskLists.find(tl => tl.id === listId)) {
+        if (!state.taskLists.some(tl => tl.id === listId)) {
           await api.getTaskList(listId);
         }
 
@@ -165,8 +165,8 @@ const CreateUpdateTaskScreen: React.FC = () => {
 
   useKeyboardShortcuts({
     onEscape: () => navigate(`/task-lists/${listId}`),
-    onAltEnter: createUpdateTask,
-    onAltS: createUpdateTask
+    onAltEnter: () => { createUpdateTask(); },
+    onAltS: () => { createUpdateTask(); }
   });
 
   if (isLoading) {
@@ -184,7 +184,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
         <Button 
           variant="ghost"
           aria-label="Go back"
-          onClick={() => navigate(`/task-lists/${listId}`)}
+          onPress={() => navigate(`/task-lists/${listId}`)}
         >
           <ArrowLeft size={20} />
         </Button>
@@ -250,7 +250,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
         <Button 
           type="submit" 
           color="primary" 
-          onClick={createUpdateTask}
+          onPress={createUpdateTask}
           fullWidth
         >
           {isUpdate ? "Update Task" : "Create Task"}

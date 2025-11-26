@@ -18,14 +18,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /*
 The application context tests are crucial for:
-
-Verifying Spring Boot auto-configuration
-
-Ensuring all components can be instantiated
-
-Catching configuration issues early
-
-Testing the actual dependency injection container
+- Verifying Spring Boot autoconfiguration
+- Ensuring all components can be instantiated
+- Catching configuration issues early
+- Testing the actual dependency injection container
 */
 
 @SpringBootTest

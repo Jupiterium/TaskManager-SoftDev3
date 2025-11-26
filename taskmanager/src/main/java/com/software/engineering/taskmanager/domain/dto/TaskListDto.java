@@ -10,5 +10,4 @@ public record TaskListDto(
         Integer count,
         Double progress,
         List<TaskDto> tasks
-)
-{ }
+) {}

@@ -90,7 +90,7 @@ class TaskListTest {
     
     @Test
     void equals_SameObject_ReturnsTrue() {
-        assertTrue(taskList.equals(taskList));
+        assertEquals(taskList, taskList);
     }
     
     @Test
@@ -98,16 +98,16 @@ class TaskListTest {
         TaskList equalTaskList = new TaskList(taskList.getId(), taskList.getTitle(), taskList.getDescription(), 
                                              taskList.getTasks(), taskList.getCreated(), taskList.getUpdated());
         
-        assertTrue(taskList.equals(equalTaskList));
+        assertEquals(taskList, equalTaskList);
     }
     
     @Test
     void equals_DifferentObjects_ReturnsFalse() {
         TaskList differentTaskList = new TaskList(UUID.randomUUID(), "Different", "Different", new ArrayList<>(), now, now);
         
-        assertFalse(taskList.equals(differentTaskList));
-        assertFalse(taskList.equals(null));
-        assertFalse(taskList.equals("string"));
+        assertNotEquals(taskList, differentTaskList);
+        assertNotEquals(null, taskList);
+        assertNotEquals("string", taskList);
     }
     
     @Test

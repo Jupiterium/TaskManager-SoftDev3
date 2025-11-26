@@ -50,7 +50,7 @@ const TaskListScreen: React.FC = () => {
             isPressable
             onPress={() => handleSelectTaskList(list.id)}
             className="mb-4 w-full min-w-96"
-            role="button"
+            as="button"
             aria-label={`Select task list: ${list.title}`}
           >
             <CardBody>

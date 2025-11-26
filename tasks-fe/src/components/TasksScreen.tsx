@@ -18,7 +18,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../AppProvider";
 import Breadcrumb from "./Breadcrumb";
-import { getTaskStatusColor, getPriorityColor } from "../utils/taskColors";
+import { getPriorityColor } from "../utils/taskColors";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Task from "../domain/Task";
 import { TaskStatus } from "../domain/TaskStatus";
@@ -52,12 +52,12 @@ const TaskListScreen: React.FC = () => {
           await api.getTaskList(listId);
         }
 
-        // Attempt to fetch tasks - this may 404 but we'll try anyway
-        try {
-          await api.fetchTasks(listId);
-        } catch (error) {
-          console.log("Tasks not available yet");
-        }
+        // Attempt to fetch tasks - this may 404, but we try anyway
+        // If tasks aren't available yet, then that's an expected scenario we can handle
+        await api.fetchTasks(listId).catch((error) => {
+          console.log("Tasks not available yet:", error.message);
+          // We're explicitly allowing this error as the tasks might not exist yet
+        });
       } catch (error) {
         console.error("Error loading task list:", error);
       } finally {
@@ -149,7 +149,7 @@ const TaskListScreen: React.FC = () => {
               <Button
                 variant="ghost"
                 aria-label={`Edit task "${task.title}"`}
-                onClick={() =>
+                onPress={() =>
                   navigate(`/task-lists/${listId}/edit-task/${task.id}`)
                 }
               >
@@ -158,7 +158,7 @@ const TaskListScreen: React.FC = () => {
               {task.customReminderDateTime ? (
                 <Button
                   variant="ghost"
-                  onClick={() => api.removeCustomReminder(listId, task.id!)}
+                  onPress={() => api.removeCustomReminder(listId, task.id!)}
                   aria-label={`Remove reminder for "${task.title}"`}
                 >
                   <BellOff className="h-4 w-4" />
@@ -166,7 +166,7 @@ const TaskListScreen: React.FC = () => {
               ) : (
                 <Button
                   variant="ghost"
-                  onClick={() => {
+                  onPress={() => {
                     const reminderTime = new Date();
                     reminderTime.setHours(reminderTime.getHours() + 1);
                     api.setCustomReminder(listId, task.id!, reminderTime);
@@ -179,7 +179,7 @@ const TaskListScreen: React.FC = () => {
               <Button
                 variant="bordered"
                 color="danger"
-                onClick={() => api.deleteTask(listId, task.id)}
+                onPress={() => api.deleteTask(listId, task.id)}
                 aria-label={`Delete task "${task.title}"`}
                 className="hover:bg-danger hover:text-white"
               >
@@ -209,7 +209,7 @@ const TaskListScreen: React.FC = () => {
           <Button
             variant="ghost"
             aria-label="Go back to Task Lists"
-            onClick={() => {
+            onPress={() => {
               api.fetchTaskLists();
               navigate("/");
             }}
@@ -224,7 +224,7 @@ const TaskListScreen: React.FC = () => {
           <Button
             variant="ghost"
             aria-label={`Edit task list`}
-            onClick={() => navigate(`/edit-task-list/${listId}`)}
+            onPress={() => navigate(`/edit-task-list/${listId}`)}
           >
             <Edit className="h-4 w-4" />
           </Button>
@@ -237,7 +237,7 @@ const TaskListScreen: React.FC = () => {
         aria-label="Task completion progress"
       />
       <Button
-        onClick={() => navigate(`/task-lists/${listId}/new-task`)}
+        onPress={() => navigate(`/task-lists/${listId}/new-task`)}
         aria-label="Add new task"
         className="mb-4 w-full"
         color="primary"
@@ -263,7 +263,7 @@ const TaskListScreen: React.FC = () => {
           variant="bordered"
           color="danger"
           startContent={<Minus size={20} />}
-          onClick={deleteTaskList}
+          onPress={deleteTaskList}
           aria-label="Delete current task list"
           className="hover:bg-danger hover:text-white"
         >

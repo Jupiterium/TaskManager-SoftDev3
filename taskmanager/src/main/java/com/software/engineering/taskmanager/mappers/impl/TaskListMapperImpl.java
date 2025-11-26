@@ -8,7 +8,6 @@ import com.software.engineering.taskmanager.mappers.TaskListMapper;
 import com.software.engineering.taskmanager.mappers.TaskMapper;
 import org.springframework.stereotype.Component;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 @Component
@@ -60,7 +59,4 @@ public class TaskListMapperImpl implements TaskListMapper
 
         return (double) closedTaskCount / tasks.size();
     }
-
-
-
 }

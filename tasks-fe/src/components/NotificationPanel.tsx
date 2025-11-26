@@ -134,7 +134,7 @@ const NotificationPanel: React.FC = () => {
                       isIconOnly
                       size="sm"
                       variant="light"
-                      onClick={(e) => {
+                      onPress={(e) => {
                         e.stopPropagation();
                         dismissNotification(notification.id);
                       }}

@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -22,7 +24,7 @@ class GlobalExceptionHandlerTest {
         ResponseEntity<ErrorResponse> response = handler.handleExceptions(exception, request);
         
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals(400, response.getBody().status());
+        assertEquals(400, Objects.requireNonNull(response.getBody()).status());
         assertEquals("Test error", response.getBody().message());
         assertEquals("uri=/test", response.getBody().details());
     }

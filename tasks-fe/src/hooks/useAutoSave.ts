@@ -1,5 +1,3 @@
-import { useEffect, useRef } from 'react';
-
 export const useAutoSave = (data: any, key: string) => {
   const getSavedData = () => {
     try {
