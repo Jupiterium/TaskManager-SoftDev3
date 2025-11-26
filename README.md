@@ -28,7 +28,6 @@ a React TypeScript frontend, featuring real-time notifications, task management,
 - **Offline Support**: Continue working without internet connection
 - **Auto-save**: Automatic data persistence
 - **Keyboard Shortcuts**: Enhanced productivity features
-- **Responsive Design**: Mobile-first UI with Tailwind CSS
 - **Error Handling**: Comprehensive error management and user feedback
 
 

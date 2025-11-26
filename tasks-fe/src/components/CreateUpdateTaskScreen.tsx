@@ -174,7 +174,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
   }
 
   return (
-    <div className="p-4 max-w-md mx-auto">
+    <div className="p-4 max-w-md mx-auto w-full">
       <Breadcrumb items={[
         { label: taskList?.title || 'Task List', path: `/task-lists/${listId}` },
         { label: isUpdate ? (task?.title || 'Edit Task') : 'New Task' }
@@ -216,6 +216,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
           label="Due date (optional)"
           defaultValue={dueDate ? parseDate(formatDateForPicker(dueDate)!) : undefined}
           onChange={(newDate) => handleDateChange(newDate ? new Date(newDate.toString()) : null)}
+          minValue={parseDate(new Date().toISOString().split('T')[0])}
           popoverProps={{
             placement: "right"
           }}
@@ -226,6 +227,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
           granularity="minute"
           defaultValue={customReminderDateTime ? parseDateTime(formatDateTimeForPicker(customReminderDateTime)!) : undefined}
           onChange={handleReminderChange}
+          minValue={parseDateTime(new Date().toISOString().slice(0, 16))}
           popoverProps={{
             placement: "right"
           }}
@@ -233,7 +235,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
           hourCycle={12}
         />
         <Spacer y={4} />
-        <div className="flex justify-between mx-auto gap-2">
+        <div className="flex flex-wrap justify-center gap-2 sm:justify-between">
           {Object.values(TaskPriority).map((p) => (
             <Chip
               key={p}
