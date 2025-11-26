@@ -43,7 +43,8 @@ class TaskManagerErrorScenariosIntegrationTest {
         UUID existingId = UUID.randomUUID();
         Task task = new Task(existingId, "Test Task", "Description", null, null, TaskPriority.MEDIUM, null, null, null, null);
 
-        assertThatThrownBy(() -> taskService.createTask(createdTaskList.getId(), task))
+        UUID taskListId = createdTaskList.getId();
+        assertThatThrownBy(() -> taskService.createTask(taskListId, task))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Task already has an ID!");
     }
@@ -55,7 +56,8 @@ class TaskManagerErrorScenariosIntegrationTest {
 
         Task task = new Task(null, null, "Description", null, null, TaskPriority.MEDIUM, null, null, null, null);
 
-        assertThatThrownBy(() -> taskService.createTask(createdTaskList.getId(), task))
+        UUID taskListId = createdTaskList.getId();
+        assertThatThrownBy(() -> taskService.createTask(taskListId, task))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Task must have a title!");
     }
@@ -67,7 +69,8 @@ class TaskManagerErrorScenariosIntegrationTest {
 
         Task task = new Task(null, "   ", "Description", null, null, TaskPriority.MEDIUM, null, null, null, null);
 
-        assertThatThrownBy(() -> taskService.createTask(createdTaskList.getId(), task))
+        UUID taskListId = createdTaskList.getId();
+        assertThatThrownBy(() -> taskService.createTask(taskListId, task))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Task must have a title!");
     }
@@ -80,7 +83,8 @@ class TaskManagerErrorScenariosIntegrationTest {
         UUID nonExistentTaskId = UUID.randomUUID();
         Task updateTask = new Task(nonExistentTaskId, "Updated Task", "Description", null, TaskStatus.OPEN, TaskPriority.HIGH, null, null, null, null);
 
-        assertThatThrownBy(() -> taskService.updateTask(createdTaskList.getId(), nonExistentTaskId, updateTask))
+        UUID taskListId = createdTaskList.getId();
+        assertThatThrownBy(() -> taskService.updateTask(taskListId, nonExistentTaskId, updateTask))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Task not found!");
     }
@@ -96,7 +100,9 @@ class TaskManagerErrorScenariosIntegrationTest {
         UUID differentId = UUID.randomUUID();
         Task updateTask = new Task(differentId, "Updated Task", "Description", null, TaskStatus.OPEN, TaskPriority.HIGH, null, null, null, null);
 
-        assertThatThrownBy(() -> taskService.updateTask(createdTaskList.getId(), createdTask.getId(), updateTask))
+        UUID taskListId = createdTaskList.getId();
+        UUID taskId = createdTask.getId();
+        assertThatThrownBy(() -> taskService.updateTask(taskListId, taskId, updateTask))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Task IDs do not match!");
     }
@@ -147,7 +153,8 @@ class TaskManagerErrorScenariosIntegrationTest {
         UUID differentId = UUID.randomUUID();
         TaskList updateTaskList = new TaskList(differentId, "Updated List", "Description", null, null, null);
 
-        assertThatThrownBy(() -> taskListService.updateTaskList(createdTaskList.getId(), updateTaskList))
+        UUID taskListId = createdTaskList.getId();
+        assertThatThrownBy(() -> taskListService.updateTaskList(taskListId, updateTaskList))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Attempting to change task list ID, this is not permitted!");
     }

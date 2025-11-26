@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Textarea, Spacer, Card, Chip } from "@nextui-org/react";
+import { Button, Input, Textarea, Spacer, Chip } from "@nextui-org/react";
 import { ArrowLeft } from "lucide-react";
 import { useAppContext } from "../AppProvider";
 import { useNavigate, useParams } from "react-router-dom";
@@ -45,7 +45,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
         console.log("Loading initial data...");
         
         // First ensure we have the task list
-        if (!state.taskLists.find(tl => tl.id === listId)) {
+        if (!state.taskLists.some(tl => tl.id === listId)) {
           await api.getTaskList(listId);
         }
 
@@ -165,8 +165,8 @@ const CreateUpdateTaskScreen: React.FC = () => {
 
   useKeyboardShortcuts({
     onEscape: () => navigate(`/task-lists/${listId}`),
-    onAltEnter: createUpdateTask,
-    onAltS: createUpdateTask
+    onAltEnter: () => { createUpdateTask(); },
+    onAltS: () => { createUpdateTask(); }
   });
 
   if (isLoading) {
@@ -174,7 +174,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
   }
 
   return (
-    <div className="p-4 max-w-md mx-auto">
+    <div className="p-4 max-w-md mx-auto w-full">
       <Breadcrumb items={[
         { label: taskList?.title || 'Task List', path: `/task-lists/${listId}` },
         { label: isUpdate ? (task?.title || 'Edit Task') : 'New Task' }
@@ -184,7 +184,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
         <Button 
           variant="ghost"
           aria-label="Go back"
-          onClick={() => navigate(`/task-lists/${listId}`)}
+          onPress={() => navigate(`/task-lists/${listId}`)}
         >
           <ArrowLeft size={20} />
         </Button>
@@ -216,6 +216,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
           label="Due date (optional)"
           defaultValue={dueDate ? parseDate(formatDateForPicker(dueDate)!) : undefined}
           onChange={(newDate) => handleDateChange(newDate ? new Date(newDate.toString()) : null)}
+          minValue={parseDate(new Date().toISOString().split('T')[0])}
           popoverProps={{
             placement: "right"
           }}
@@ -226,6 +227,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
           granularity="minute"
           defaultValue={customReminderDateTime ? parseDateTime(formatDateTimeForPicker(customReminderDateTime)!) : undefined}
           onChange={handleReminderChange}
+          minValue={parseDateTime(new Date().toISOString().slice(0, 16))}
           popoverProps={{
             placement: "right"
           }}
@@ -233,7 +235,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
           hourCycle={12}
         />
         <Spacer y={4} />
-        <div className="flex justify-between mx-auto gap-2">
+        <div className="flex flex-wrap justify-center gap-2 sm:justify-between">
           {Object.values(TaskPriority).map((p) => (
             <Chip
               key={p}
@@ -250,7 +252,7 @@ const CreateUpdateTaskScreen: React.FC = () => {
         <Button 
           type="submit" 
           color="primary" 
-          onClick={createUpdateTask}
+          onPress={createUpdateTask}
           fullWidth
         >
           {isUpdate ? "Update Task" : "Create Task"}

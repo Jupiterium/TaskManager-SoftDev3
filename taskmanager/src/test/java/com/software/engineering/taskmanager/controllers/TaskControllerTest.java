@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -31,8 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TaskControllerTest {
     
     @Autowired private MockMvc mockMvc;
-    @MockBean private TaskService taskService;
-    @MockBean private TaskMapper taskMapper;
+    @MockitoBean private TaskService taskService;
+    @MockitoBean private TaskMapper taskMapper;
     @Autowired private ObjectMapper objectMapper;
     
     private UUID taskListId = UUID.randomUUID();

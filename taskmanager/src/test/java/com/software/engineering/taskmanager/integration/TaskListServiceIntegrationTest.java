@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,14 +63,7 @@ class TaskListServiceIntegrationTest {
         TaskList taskList = new TaskList(null, "Original Title", "Original Description", null, null, null);
         TaskList createdTaskList = taskListService.createTaskList(taskList);
 
-        // Add small delay to ensure different timestamps
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-
-        TaskList updateTaskList = new TaskList(createdTaskList.getId(), "Updated Title", "Updated Description", null, createdTaskList.getCreated(), createdTaskList.getUpdated());
+        TaskList updateTaskList = new TaskList(createdTaskList.getId(), "Updated Title", "Updated Description", null, createdTaskList.getCreated(), null);
         TaskList updatedTaskList = taskListService.updateTaskList(createdTaskList.getId(), updateTaskList);
 
         assertThat(updatedTaskList.getTitle()).isEqualTo("Updated Title");

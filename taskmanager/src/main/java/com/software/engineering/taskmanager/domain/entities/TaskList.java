@@ -1,7 +1,6 @@
 package com.software.engineering.taskmanager.domain.entities;
 
 import jakarta.persistence.*;
-import org.hibernate.Remove;
 
 import java.time.LocalDateTime;
 import java.util.List;

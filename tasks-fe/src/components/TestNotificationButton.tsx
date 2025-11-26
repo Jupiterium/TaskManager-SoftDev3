@@ -9,7 +9,7 @@ const TestNotificationButton: React.FC = () => {
         method: "POST",
       });
       // Refresh the page to see the new notification
-      window.location.reload();
+      globalThis.location.reload();
     } catch (error) {
       console.error("Failed to create test notification:", error);
     }

@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor, fireEvent } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { AppProvider, useAppContext } from '../src/AppProvider'
 import axios from 'axios'
 
 vi.mock('axios')
-const mockedAxios = vi.mocked(axios)
+const mockedAxios = axios as any
 
 // Mock the useOfflineStatus hook
 vi.mock('../src/hooks/useOfflineStatus', () => ({
@@ -24,7 +24,7 @@ const TestComponent = () => {
 describe('AppProvider', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockedAxios.get.mockResolvedValue({ data: [] })
+    mockedAxios.get = vi.fn().mockResolvedValue({ data: [] })
   })
 
   it('provides initial state', () => {
@@ -48,7 +48,7 @@ describe('AppProvider', () => {
   })
 
   it('fetches task lists on mount', async () => {
-    mockedAxios.get.mockResolvedValue({ 
+    mockedAxios.get = vi.fn().mockResolvedValue({ 
       data: [{ id: '1', title: 'Test List' }] 
     })
 

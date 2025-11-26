@@ -122,7 +122,7 @@ class TaskTest {
     
     @Test
     void equals_SameObject_ReturnsTrue() {
-        assertTrue(task.equals(task));
+        assertEquals(task, task);
     }
     
     @Test
@@ -130,16 +130,16 @@ class TaskTest {
         Task equalTask = new Task(task.getId(), task.getTitle(), task.getDescription(), task.getDueDate(), 
                                  task.getStatus(), task.getPriority(), task.getTaskList(), task.getCreated(), task.getUpdated(), task.getCustomReminderDateTime());
         
-        assertTrue(task.equals(equalTask));
+        assertEquals(task, equalTask);
     }
     
     @Test
     void equals_DifferentObjects_ReturnsFalse() {
         Task differentTask = new Task(UUID.randomUUID(), "Different", "Different", now, TaskStatus.OPEN, TaskPriority.LOW, taskList, now, now, null);
         
-        assertFalse(task.equals(differentTask));
-        assertFalse(task.equals(null));
-        assertFalse(task.equals("string"));
+        assertNotEquals(task, differentTask);
+        assertNotEquals(null, task);
+        assertNotEquals("string", task);
     }
     
     @Test

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Textarea, Spacer, Card } from "@nextui-org/react";
+import { Button, Input, Textarea, Spacer } from "@nextui-org/react";
 import { ArrowLeft } from "lucide-react";
 import { useAppContext } from "../AppProvider";
 import { useNavigate, useParams } from "react-router-dom";
@@ -91,8 +91,8 @@ const CreateUpdateTaskListScreen: React.FC = () => {
 
   useKeyboardShortcuts({
     onEscape: () => navigate('/'),
-    onAltEnter: createUpdateTaskList,
-    onAltS: createUpdateTaskList
+    onAltEnter: () => { createUpdateTaskList(); },
+    onAltS: () => { createUpdateTaskList(); }
   });
 
   return (
@@ -102,7 +102,7 @@ const CreateUpdateTaskListScreen: React.FC = () => {
       ]} />
       
       <div className="flex items-center space-x-4 mb-6">
-        <Button variant="ghost" onClick={() => navigate("/")}>
+        <Button variant="ghost" onPress={() => navigate("/")}>
           <ArrowLeft size={20} />
         </Button>
         <h1 className="text-2xl font-bold">
@@ -129,7 +129,7 @@ const CreateUpdateTaskListScreen: React.FC = () => {
           fullWidth
         />
         <Spacer y={1} />
-        <Button type="submit" color="primary" onClick={createUpdateTaskList} fullWidth>
+        <Button type="submit" color="primary" onPress={createUpdateTaskList} fullWidth>
           {isUpdate ? "Update Task List" : "Create Task List"}
         </Button>
       </form>

@@ -19,8 +19,8 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
       <button onClick={() => navigate('/')} className="flex items-center hover:text-blue-600">
         <Home size={16} />
       </button>
-      {items.map((item, index) => (
-        <React.Fragment key={index}>
+      {items.map((item) => (
+        <React.Fragment key={`breadcrumb-item-${item.label}`}>
           <ChevronRight size={14} className="text-gray-600" />
           {item.path ? (
             <button onClick={() => navigate(item.path!)} className="text-gray-600 hover:text-blue-600">
