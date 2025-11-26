@@ -90,7 +90,7 @@ const NotificationPanel: React.FC = () => {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-96 p-0">
+      <PopoverContent className="min-w-64 max-w-80 w-auto p-0">
         <div className="p-4 border-b">
           <h3 className="text-lg font-semibold">Notifications</h3>
         </div>
@@ -103,7 +103,7 @@ const NotificationPanel: React.FC = () => {
             notifications.map((notification) => (
               <Card
                 key={notification.id}
-                className="m-2 cursor-pointer hover:bg-gray-50"
+                className="m-2 cursor-pointer hover:bg-gray-100 bg-gray-30 border-2 border-gray-300 shadow-md"
                 isPressable
                 onPress={() => handleNotificationClick(notification)}
               >
@@ -127,7 +127,13 @@ const NotificationPanel: React.FC = () => {
                         </p>
                       )}
                       <p className="text-xs text-gray-400 mt-2">
-                        {new Date(notification.created).toLocaleString()}
+                        {new Date(notification.created).toLocaleString(undefined, {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: 'numeric',
+                          minute: '2-digit'
+                        })}
                       </p>
                     </div>
                     <Button
@@ -135,7 +141,8 @@ const NotificationPanel: React.FC = () => {
                       size="sm"
                       variant="light"
                       onPress={(e) => {
-                        e.stopPropagation();
+                        (e as any).stopPropagation?.();
+                        (e as any).preventDefault?.();
                         dismissNotification(notification.id);
                       }}
                       aria-label="Dismiss notification"

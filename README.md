@@ -1,7 +1,10 @@
-# TaskManager-SoftDev3
+# Task Manager - Software Engineering 3 Project
 
 ## Project Overview
-A comprehensive Task/Project Management application developed as part of the Software Development 3 module. This full-stack application demonstrates modern software engineering practices with a Spring Boot REST API backend and a React TypeScript frontend, featuring real-time notifications, task management, and comprehensive testing.
+A comprehensive Task/Project Management application developed as part of the Software Engineering 3 (3rd Year) module. 
+This full-stack application demonstrates modern software engineering practices with a Spring Boot REST API backend and 
+a React TypeScript frontend, featuring real-time notifications, task management, and comprehensive testing.
+
 
 ## Architecture
 - **Backend**: Spring Boot 3.5.6 REST API with Java 21 (`taskmanager/`)
@@ -10,11 +13,11 @@ A comprehensive Task/Project Management application developed as part of the Sof
 - **Testing**: Comprehensive test suite with 152 test cases achieving 100% coverage
 - **Containerization**: Docker Compose for both services
 
-## Key Features
 
+## Key Features
 ### Core Functionality
 - **Task Management**: Create, update, delete, and organize tasks
-- **Task Lists**: Group tasks into customizable lists
+- **Task Lists**: Group tasks into customizable task lists
 - **Priority System**: High, Medium, Low priority levels
 - **Status Tracking**: Open, In Progress, Completed task states
 - **Due Dates**: Set and track task deadlines
@@ -28,13 +31,13 @@ A comprehensive Task/Project Management application developed as part of the Sof
 - **Responsive Design**: Mobile-first UI with Tailwind CSS
 - **Error Handling**: Comprehensive error management and user feedback
 
-## Technology Stack
 
+## Technology Stack
 ### Backend (taskmanager/)
 - **Framework**: Spring Boot 3.5.6
 - **Language**: Java 21
 - **Database**: PostgreSQL (runtime), H2 (testing)
-- **ORM**: JPA/Hibernate
+- **ORM (Object Relational Mapper)**: JPA/Hibernate
 - **Build Tool**: Maven
 - **Testing**: JUnit 5, Mockito, Spring Boot Test
 - **Architecture**: Layered (Controller → Service → Repository)
@@ -51,8 +54,8 @@ A comprehensive Task/Project Management application developed as part of the Sof
 - **Icons**: Lucide React 0.453.0
 - **Testing**: Vitest 2.0.0, Testing Library
 
-## Getting Started
 
+## Getting Started
 ### Prerequisites
 - Java 21 or higher
 - Node.js 18+ and npm
@@ -60,7 +63,6 @@ A comprehensive Task/Project Management application developed as part of the Sof
 - Git
 
 ### Backend Setup
-
 1. **Navigate to backend directory**:
    ```bash
    cd taskmanager
@@ -68,23 +70,22 @@ A comprehensive Task/Project Management application developed as part of the Sof
 
 2. **Start PostgreSQL** (using Docker Compose):
    ```bash
-   docker-compose up -d
+   docker-compose up
    ```
 
 3. **Run the application**:
    ```bash
    ./mvnw spring-boot:run
    ```
-   
-   The API will be available at `http://localhost:8081`
+   -> The API will be available at `http://localhost:8081`
 
 4. **Run tests**:
    ```bash
    ./mvnw test
    ```
 
-### Frontend Setup
 
+### Frontend Setup
 1. **Navigate to frontend directory**:
    ```bash
    cd tasks-fe
@@ -99,8 +100,7 @@ A comprehensive Task/Project Management application developed as part of the Sof
    ```bash
    npm run dev
    ```
-   
-   The application will be available at `http://localhost:5173`
+   -> The actual application will then be available at `http://localhost:5173`
 
 4. **Run tests**:
    ```bash
@@ -113,92 +113,91 @@ A comprehensive Task/Project Management application developed as part of the Sof
    ```
 
 ### Docker Deployment
-
 **Backend with PostgreSQL**:
 ```bash
 cd taskmanager
-docker-compose up -d
+docker-compose up 
 ```
 
 **Frontend**:
 ```bash
 cd tasks-fe
-docker-compose up -d
+docker-compose up 
 ```
-
+ 
 ## Project Structure
-
 ```
 TaskManager-SoftDev3/
-├── taskmanager/                    # Spring Boot Backend
+├── taskmanager/ # Spring Boot Backend
 │   ├── src/
 │   │   ├── main/
 │   │   │   ├── java/com/software/engineering/taskmanager/
-│   │   │   │   ├── controllers/           # REST Controllers
+│   │   │   │   ├── controllers/ # REST Controllers
 │   │   │   │   │   ├── TaskController.java
 │   │   │   │   │   ├── TaskListController.java
 │   │   │   │   │   ├── NotificationController.java
 │   │   │   │   │   └── GlobalExceptionHandler.java
-│   │   │   │   ├── services/              # Business Logic
+│   │   │   │   ├── services/ # Business Logic
 │   │   │   │   │   ├── TaskService.java
 │   │   │   │   │   ├── TaskListService.java
 │   │   │   │   │   ├── NotificationService.java
 │   │   │   │   │   └── ReminderSchedulerService.java
-│   │   │   │   ├── repositories/          # Data Access
+│   │   │   │   ├── repositories/ # Data Access
 │   │   │   │   │   ├── TaskRepository.java
 │   │   │   │   │   ├── TaskListRepository.java
 │   │   │   │   │   └── NotificationRepository.java
 │   │   │   │   ├── domain/
-│   │   │   │   │   ├── entities/          # JPA Entities
-│   │   │   │   │   └── dto/               # Data Transfer Objects
-│   │   │   │   ├── mappers/               # Entity-DTO Mappers
+│   │   │   │   │   ├── entities/ # JPA Entities
+│   │   │   │   │   └── dto/ # Data Transfer Objects
+│   │   │   │   ├── mappers/ # Entity-DTO Mappers
 │   │   │   │   └── TaskmanagerApplication.java
 │   │   │   └── resources/
 │   │   │       └── application.properties
-│   │   └── test/                          # 152 Test Cases
-│   │       ├── java/                     # Unit & Integration Tests
-│   │       └── TEST_CASES.md             # Comprehensive Test Documentation
-│   ├── pom.xml                           # Maven Configuration
-│   ├── docker-compose.yml                # PostgreSQL Container
+│   │   └── test/ # 152 Test Cases
+│   │       ├── java/ # Unit & Integration Tests
+│   │       └── TEST_CASES.md  # Test Documentation
+│   ├── pom.xml # Maven Configuration
+│   ├── docker-compose.yml # PostgreSQL Container
 │   └── README.md
-├── tasks-fe/                             # React Frontend
+│
+├── tasks-fe/ # React Frontend
 │   ├── src/
-│   │   ├── components/                   # React Components
-│   │   │   ├── TaskListsScreen.tsx       # Task Lists Management
-│   │   │   ├── TasksScreen.tsx           # Task Management
+│   │   ├── components/ # React Components
+│   │   │   ├── TaskListsScreen.tsx # Task Lists Management
+│   │   │   ├── TasksScreen.tsx # Task Management
 │   │   │   ├── CreateUpdateTaskScreen.tsx
 │   │   │   ├── CreateUpdateTaskListScreen.tsx
-│   │   │   ├── NotificationPanel.tsx     # Notification System
-│   │   │   ├── Header.tsx                # Navigation
-│   │   │   ├── OfflineBanner.tsx         # Offline Support
+│   │   │   ├── NotificationPanel.tsx # Notification System
+│   │   │   ├── Header.tsx # Navigation
+│   │   │   ├── OfflineBanner.tsx # Offline Support
 │   │   │   └── BackOnlineBanner.tsx
-│   │   ├── domain/                       # TypeScript Types
+│   │   ├── domain/ # TypeScript Types
 │   │   │   ├── Task.ts
 │   │   │   ├── TaskList.ts
 │   │   │   ├── Notification.ts
 │   │   │   ├── TaskStatus.ts
 │   │   │   └── TaskPriority.ts
-│   │   ├── hooks/                        # Custom React Hooks
-│   │   │   ├── useAutoSave.ts            # Auto-save Functionality
-│   │   │   ├── useOfflineStatus.ts       # Offline Detection
-│   │   │   └── useKeyboardShortcuts.ts   # Keyboard Navigation
+│   │   ├── hooks/ # Custom React Hooks
+│   │   │   ├── useAutoSave.ts # Auto-save Functionality
+│   │   │   ├── useOfflineStatus.ts # Offline Detection
+│   │   │   └── useKeyboardShortcuts.ts # Keyboard Navigation
 │   │   ├── utils/
-│   │   │   └── taskColors.ts             # UI Utilities
-│   │   ├── App.tsx                       # Main Application
-│   │   ├── AppProvider.tsx               # Context Provider
-│   │   └── main.tsx                      # Entry Point
-│   ├── test/                             # Frontend Tests
-│   ├── package.json                      # Dependencies
-│   ├── vite.config.ts                    # Vite Configuration
-│   ├── tailwind.config.js                # Tailwind CSS Config
-│   ├── docker-compose.yml                # Frontend Container
+│   │   │   └── taskColors.ts # UI Utilities
+│   │   ├── App.tsx # Main Application
+│   │   ├── AppProvider.tsx # Context Provider
+│   │   └── main.tsx # Entry Point
+│   ├── test/ # Frontend Tests
+│   ├── package.json # Dependencies
+│   ├── vite.config.ts # Vite Configuration
+│   ├── tailwind.config.js # Tailwind CSS Config
+│   ├── docker-compose.yml # Frontend Container
 │   ├── Dockerfile
 │   └── README.md
-└── README.md                             # This file
+└── README.md # The main readme file (this file)
 ```
 
-## API Endpoints
 
+## API Endpoints
 ### Task Lists
 - `GET /task-lists` - Get all task lists
 - `POST /task-lists` - Create new task list
@@ -220,8 +219,8 @@ TaskManager-SoftDev3/
 - `DELETE /notifications/{id}` - Delete notification
 - `POST /notifications/test` - Create test notification
 
-## Database Configuration
 
+## Database Configuration
 ### PostgreSQL (Production)
 ```properties
 spring.datasource.driver-class-name=org.postgresql.Driver
@@ -235,11 +234,11 @@ server.port=8081
 ### H2 (Testing)
 Automatically configured for test environment with in-memory database.
 
-## Testing
 
+## Testing
 ### Backend Testing (152 Test Cases)
 - **Unit Tests**: Service layer, Controller layer, Entity layer
-- **Integration Tests**: End-to-end workflows, Error scenarios
+- **Integration Tests**: Components & End-to-end workflows, Error scenarios
 - **Repository Tests**: Data access layer validation
 - **Coverage**: 100% line, branch, and method coverage
 
@@ -263,28 +262,35 @@ Automatically configured for test environment with in-memory database.
 cd taskmanager && ./mvnw test
 
 # Frontend
-cd tasks-fe && npm test
+cd tasks-fe && npm run test
 ```
 
 ## Development Features
-
 ### Backend Features
 - **Layered Architecture**: Clean separation of concerns
 - **Exception Handling**: Global exception handler with proper HTTP status codes
-- **Data Validation**: Input validation with meaningful error messages
+- **Data Validation**: Input validation with proper error messages
 - **Scheduled Tasks**: Automatic reminder notifications
 - **Custom Queries**: Optimized database queries for performance
 
 ### Frontend Features
 - **Offline Support**: Works without internet connection
-- **Auto-save**: Automatic data persistence every 30 seconds
-- **Keyboard Shortcuts**: Enhanced productivity (Ctrl+N for new task, etc.)
-- **Responsive Design**: Mobile-first approach
+- **Auto-save**: Automatic data persistence using localStorage
+- **Breadcrumb Navigation**: Subtle visual element which helps with the site navigation
+- **Keyboard Shortcuts**: Modern & Enhanced productivity 
+  - Alt+N - New Task/Task List (depending where you are)
+  - Alt+Enter - Submit/Save
+  - Alt+S - Quick Save
+  - Esc - Cancel/Back
+- **Responsive Design**: Approaching various devices
 - **Real-time Updates**: Live notification system
-- **Error Boundaries**: Graceful error handling
+- **Error Boundaries**: Proper error handling
 
-## Development Team
-3rd Year Software Development Students - TUS (Technological University of the Shannon)
+
+## Development Team (x4)
+3rd Year Software Design Students @ TUS (Technological University of the Shannon):
+- Jenny (Huong) Tran, Daniel Raducan, Makar Semikin, Steven (Yu Lin) Wan
+
 
 ## License
-This project is developed for educational purposes as part of the Software Development 3 module. 
+This project is developed for educational purposes as part of the Software Engineering 3 module. 

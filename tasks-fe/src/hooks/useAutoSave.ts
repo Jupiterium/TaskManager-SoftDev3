@@ -1,4 +1,4 @@
-export const useAutoSave = (data: any, key: string) => {
+export const useAutoSave = (key: string) => {
   const getSavedData = () => {
     try {
       const saved = localStorage.getItem(`autosave_${key}`);

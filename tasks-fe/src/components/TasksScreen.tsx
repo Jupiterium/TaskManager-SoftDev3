@@ -87,7 +87,7 @@ const TaskListScreen: React.FC = () => {
         task.status === TaskStatus.CLOSED ? TaskStatus.OPEN : TaskStatus.CLOSED;
 
       api
-        .updateTask(listId, task.id, updatedTask)
+        .updateTask(listId, task.id!, updatedTask)
         .then(() => {
           api.fetchTasks(listId);
           api.fetchTaskLists();
@@ -121,13 +121,13 @@ const TaskListScreen: React.FC = () => {
           </TableCell>
           <TableCell className="px-4 py-2">
             {task.dueDate && (
-              <DateInput
-                isDisabled
-                defaultValue={parseDate(
-                  new Date(task.dueDate).toISOString().split("T")[0]
-                )}
-                aria-label={`Due date for task "${task.title}"`}
-              />
+              <span className="text-sm">
+                {new Date(task.dueDate).toLocaleDateString(undefined, {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                })}
+              </span>
             )}
           </TableCell>
           <TableCell className="px-4 py-2">
@@ -135,7 +135,13 @@ const TaskListScreen: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <Bell className="h-4 w-4 text-blue-500" />
                 <span className="text-sm">
-                  {new Date(task.customReminderDateTime).toLocaleString()}
+                  {new Date(task.customReminderDateTime).toLocaleString(undefined, {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit'
+                  })}
                 </span>
               </div>
             ) : (
@@ -168,10 +174,9 @@ const TaskListScreen: React.FC = () => {
                   variant="ghost"
                   onPress={() => {
                     const reminderTime = new Date();
-                    reminderTime.setHours(reminderTime.getHours() + 1);
                     api.setCustomReminder(listId, task.id!, reminderTime);
                   }}
-                  aria-label={`Set 1-hour reminder for "${task.title}"`}
+                  aria-label={`Set reminder for "${task.title}"`}
                 >
                   <Bell className="h-4 w-4" />
                 </Button>
@@ -179,7 +184,7 @@ const TaskListScreen: React.FC = () => {
               <Button
                 variant="bordered"
                 color="danger"
-                onPress={() => api.deleteTask(listId, task.id)}
+                onPress={() => api.deleteTask(listId, task.id!)}
                 aria-label={`Delete task "${task.title}"`}
                 className="hover:bg-danger hover:text-white"
               >
@@ -254,7 +259,7 @@ const TaskListScreen: React.FC = () => {
             <TableColumn>Reminder</TableColumn>
             <TableColumn>Actions</TableColumn>
           </TableHeader>
-          <TableBody>{tableRows()}</TableBody>
+          <TableBody>{tableRows() || []}</TableBody>
         </Table>
       </div>
       <Spacer y={4} />

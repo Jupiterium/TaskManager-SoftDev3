@@ -3,7 +3,6 @@ import axios from "axios";
 import TaskList from "./domain/TaskList";
 import Task from "./domain/Task";
 import { Notification } from "./domain/Notification";
-import { useOfflineStatus } from "./hooks/useOfflineStatus";
 
 interface AppState {
   taskLists: TaskList[];
@@ -318,6 +317,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         );
         return Array.isArray(response.data) ? response.data : [];
       } catch (error) {
+        console.error('Failed to fetch notifications:', error);
         return [];
       }
     },
@@ -337,8 +337,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     api.fetchTaskLists();
   }, [api]);
 
+  const contextValue = useMemo(() => ({
+    state, isOnline, showBackOnline, api
+  }), [state, isOnline, showBackOnline, api]);
+
   return (
-    <AppContext.Provider value={{ state, isOnline, showBackOnline, api }}>{children}</AppContext.Provider>
+    <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
   );
 };
 
